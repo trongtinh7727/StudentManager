@@ -13,6 +13,21 @@
         android:theme="@style/Theme.StudentManagement"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.AddEditStudentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.DetailStudentInformationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.AddEditAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.LoginHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.AccountInformationActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.LoginActivity"
             android:exported="false" />
         <activity
