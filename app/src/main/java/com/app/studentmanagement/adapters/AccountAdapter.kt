@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.studentmanagement.databinding.ItemRowAccountBinding
-import com.app.studentmanagement.models.Account
+import com.app.studentmanagement.data.models.Account
 
 class AccountAdapter : RecyclerView.Adapter<AccountAdapter.ViewHolder>()  {
 
