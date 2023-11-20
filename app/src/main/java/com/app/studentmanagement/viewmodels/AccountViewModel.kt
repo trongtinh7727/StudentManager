@@ -1,7 +1,7 @@
 package com.app.studentmanagement.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.app.studentmanagement.models.Account
+import com.app.studentmanagement.data.models.Account
 
 class AccountViewModel : ViewModel() {
     fun generateAccounts(): List<Account> {

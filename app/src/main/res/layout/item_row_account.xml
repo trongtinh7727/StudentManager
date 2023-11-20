@@ -4,7 +4,7 @@
     <data>
         <variable
             name="account"
-            type="com.app.studentmanagement.models.Account" />
+            type="com.app.studentmanagement.data.models.Account" />
     </data>
 
     <TableRow
