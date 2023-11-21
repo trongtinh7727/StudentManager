@@ -1,14 +1,27 @@
 package com.app.studentmanagement.data.repository
 
+import android.util.Log
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
+import com.app.studentmanagement.services.DeleteUserRequest
+import com.app.studentmanagement.services.UserService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class AccountRepository {
     private val db = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("http://138.2.68.228:3000/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val userService = retrofit.create(UserService::class.java)
 
     fun addAccount(account: Account, onComplete: (Boolean) -> Unit) {
         val userCollection = db.collection("accounts")
@@ -64,8 +77,24 @@ class AccountRepository {
         }
     }
 
-    fun deleteAccount(accountId: String, onComplete: (Boolean) -> Unit) {
-        // First, delete the user from Firebase Authentication
+    fun deleteUser(uidToDelete: String, onComplete: (Boolean) -> Unit) {
+        val request = DeleteUserRequest(uidToDelete)
 
+        userService.deleteUser(request).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    onComplete(true) // User deleted successfully
+                } else {
+                    val x = response
+                    onComplete(false) // Handle deletion error
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.i("Errr", "onFailure: "+ t.message)
+                val x = t.message
+                onComplete(false) // Handle failure
+            }
+        })
     }
 }
