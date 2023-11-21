@@ -1,5 +1,6 @@
 package com.app.studentmanagement.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.studentmanagement.R
 import com.app.studentmanagement.adapters.AccountAdapter
 import com.app.studentmanagement.databinding.FragmentAccountManagementBinding
+import com.app.studentmanagement.ui.activities.AddEditAccountActivity
 import com.app.studentmanagement.viewmodels.AccountViewModel
 
 
@@ -30,7 +32,7 @@ class AccountManagementFragment : Fragment() {
 
         // set viewModel,Adapter and fill recycleView
         val accounts = viewModel.generateAccounts() // You should implement your data generation logic
-        val adapter = AccountAdapter()
+        val adapter = AccountAdapter(requireContext())
         adapter.updateList(accounts)
 
         binding.recycleViewListAccount.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -45,6 +47,14 @@ class AccountManagementFragment : Fragment() {
         autoCompleteTextView.setAdapter(adapterInputRole)
         autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
             val selectedOption = parent.getItemAtPosition(position) as String
+        }
+
+
+        //  set button add new Student
+
+        binding.buttonAdd.setOnClickListener{
+            val intent = Intent(requireActivity(), AddEditAccountActivity::class.java)
+            startActivity(intent)
         }
 
         return binding.root

@@ -2,30 +2,33 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="student"
+            type="com.app.studentmanagement.data.models.Student" />
     </data>
 
     <TableRow
         android:layout_width="match_parent"
+        android:padding="4dp"
         android:background="@drawable/style_border_row_item"
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/textViewID"
-            android:text="ID"
+            android:text="@{student.id}"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
         <TextView
             android:id="@+id/textViewName"
-            android:text="Name"
+            android:text="@{student.fullName}"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
         <TextView
             android:id="@+id/textViewClass"
-            android:text="Class"
+            android:text="@{student.classRoom}"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_height="wrap_content"
@@ -33,6 +36,8 @@
         <LinearLayout
             android:layout_weight="1"
             android:orientation="horizontal"
+            android:layout_marginHorizontal="2dp"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageButton
@@ -43,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <ImageButton
-                android:id="@+id/buttonEditDelete"
+                android:id="@+id/buttonDelete"
                 android:src="@drawable/ic_delete"
                 android:layout_weight="1"
                 android:background="@color/white"

@@ -21,16 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/buttonUploadFile"
-                    android:background="@drawable/style_5dp_radius"
-                    android:text="Upload file"
-                    android:textSize="10dp"
-                    android:layout_gravity="right"
-                    android:layout_marginHorizontal="15dp"
-                    android:textColor="#6F000000"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"   />
+
 
             </androidx.appcompat.widget.Toolbar>
             <View
@@ -39,15 +30,15 @@
                 android:layout_height="1dp"
                 android:background="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="@+id/toolbar" />
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_marginBottom="50dp"
-                android:layout_height="wrap_content">
+
                 <androidx.cardview.widget.CardView
                     android:layout_margin="20dp"
                     app:cardCornerRadius="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -59,14 +50,29 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="10dp"
                             android:orientation="vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Họ và Tên"
-                                android:layout_marginTop="10dp"
-                                android:textColor="@color/black"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Họ và Tên"
+                                    android:layout_marginTop="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/buttonDelete"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:background="@color/white"
+                                    android:layout_marginStart="235dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_delete" />
+                            </LinearLayout>
+
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -83,9 +89,9 @@
                                     <EditText
                                         android:id="@+id/editTextName"
                                         android:layout_width="match_parent"
-                                        android:enabled="false"
                                         android:layout_height="40dp"
                                         android:hint="Your ID"
+                                        android:inputType="text"
                                         android:background="@drawable/style_edit_selected"
                                         android:padding="10dp" />
                                 </androidx.cardview.widget.CardView>
@@ -122,9 +128,9 @@
                                     <EditText
                                         android:id="@+id/editTextID"
                                         android:layout_width="match_parent"
-                                        android:enabled="false"
                                         android:layout_height="40dp"
                                         android:hint="Your ID"
+                                        android:inputType="text"
                                         android:background="@drawable/style_edit_selected"
                                         android:padding="10dp" />
                                 </androidx.cardview.widget.CardView>
@@ -163,54 +169,15 @@
                                     <EditText
                                         android:id="@+id/editTextEmail"
                                         android:layout_width="match_parent"
-                                        android:enabled="false"
                                         android:background="@drawable/style_edit_selected"
                                         android:layout_height="40dp"
                                         android:hint="Your Email"
+                                        android:inputType="text"
                                         android:padding="10dp" />
                                 </androidx.cardview.widget.CardView>
 
                                 <ImageButton
                                     android:id="@+id/buttonEmail"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginHorizontal="10dp"
-                                    android:background="@null"
-                                    android:src="@drawable/ic_pen" />
-                            </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Mật Khẩu"
-                                android:textColor="@color/black"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:hintEnabled="true"
-                                    android:layout_marginVertical="5dp"
-                                    android:layout_weight="1"
-                                    android:background="@color/white"
-                                    android:hint="Your password"
-                                    app:endIconMode="password_toggle">
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:layout_width="match_parent"
-                                        android:id="@+id/editTextPassword"
-                                        android:background="@drawable/style_edit_selected"
-                                        android:inputType="textPassword"
-                                        android:enabled="false"
-                                        android:padding="10dp"
-                                        android:layout_height="40dp"/>
-                                </com.google.android.material.textfield.TextInputLayout>
-
-                                <ImageButton
-                                    android:id="@+id/buttonPassword"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -245,7 +212,7 @@
                                         android:background="@drawable/style_edit_selected"
                                         android:drawablePadding="10dp"
                                         android:hint="Department"
-                                        android:enabled="false"
+                                        android:inputType="text"
                                         android:padding="10dp" />
                                 </androidx.cardview.widget.CardView>
 
@@ -262,6 +229,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Lớp"
+                                android:inputType="text"
                                 android:textColor="@color/black"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -285,7 +253,6 @@
                                         android:background="@drawable/style_edit_selected"
                                         android:drawablePadding="10dp"
                                         android:hint="Class"
-                                        android:enabled="false"
                                         android:padding="10dp" />
                                 </androidx.cardview.widget.CardView>
 
@@ -312,13 +279,39 @@
                                 android:layout_width="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"/>
-                            <ImageButton
-                                android:id="@+id/buttonAdd"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_add"
-                                android:background="@color/white"
+                            <LinearLayout
+                                android:orientation="horizontal"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_gravity="center"
+                                android:layout_height="wrap_content">
+                                <ImageButton
+                                    android:id="@+id/buttonDownload"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_download"
+                                    android:background="@color/white"
+                                    android:layout_weight="1"
+                                    android:layout_marginHorizontal="5dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                                <ImageButton
+                                    android:id="@+id/buttonUploadFile"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_upload"
+                                    android:layout_weight="1"
+                                    android:background="@color/white"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                                <ImageButton
+                                    android:id="@+id/buttonAdd"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:layout_marginHorizontal="5dp"
+                                    android:src="@drawable/ic_add"
+                                    android:background="@color/white"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                            </LinearLayout>
+
                         </LinearLayout>
                         <TableLayout
                             android:id="@+id/tableLayout"
@@ -359,11 +352,12 @@
                             android:layout_marginVertical="20dp"
                             android:layout_gravity="center"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="40dp"/>
                     </LinearLayout>
+            </ScrollView>
+
                 </androidx.cardview.widget.CardView>
 
-            </ScrollView>
         </LinearLayout>
 
 

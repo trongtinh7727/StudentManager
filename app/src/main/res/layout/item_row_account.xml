@@ -45,14 +45,16 @@
                 android:id="@+id/buttonEdit"
                 android:src="@drawable/ic_pen"
                 android:layout_weight="1"
+                android:layout_marginHorizontal="2dp"
                 android:background="@color/white"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <ImageButton
-                android:id="@+id/buttonEditDelete"
+                android:id="@+id/buttonDelete"
                 android:src="@drawable/ic_delete"
                 android:layout_weight="1"
                 android:background="@color/white"
+                android:layout_marginHorizontal="2dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

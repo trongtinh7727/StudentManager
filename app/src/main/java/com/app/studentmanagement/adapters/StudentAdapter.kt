@@ -10,61 +10,65 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.studentmanagement.R
-import com.app.studentmanagement.databinding.ItemRowAccountBinding
-import com.app.studentmanagement.data.models.Account
-import com.app.studentmanagement.ui.activities.AccountInformationActivity
+import com.app.studentmanagement.data.models.Student
+import com.app.studentmanagement.databinding.ItemRowStudentBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
 import com.app.studentmanagement.ui.activities.DetailStudentInformationActivity
 
-class AccountAdapter(  private  var context : Context) : RecyclerView.Adapter<AccountAdapter.ViewHolder>()  {
+class StudentAdapter(    private  var context : Context
+) : RecyclerView.Adapter<StudentAdapter.ViewHolder>()  {
 
 
-    private var items: List<Account> = emptyList()
-
-    fun updateList(newItems: List<Account>) {
+    private var items: List<Student> = emptyList()
+    fun updateList(newItems: List<Student>) {
         items = newItems
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = ItemRowAccountBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            return ViewHolder(binding)
-        }
+        val binding = ItemRowStudentBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ViewHolder(binding)
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
     }
 
-        override fun getItemCount(): Int {
-            return items.size
-        }
+    override fun getItemCount(): Int {
+        return items.size
+    }
 
-      inner  class ViewHolder(private val binding: ItemRowAccountBinding) :
-            RecyclerView.ViewHolder(binding.root) {
+   inner class ViewHolder(private val binding: ItemRowStudentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-            fun bind(item: Account) {
-                binding.account = item
-                binding.buttonEdit.setOnClickListener {
-                    val intent = Intent(context, AddEditStudentActivity::class.java)
-                    context.startActivity(intent)
-                }
-                binding.buttonDelete.setOnClickListener {
-                    showDeleteConfirm()
-                }
+        fun bind(item: Student) {
+            binding.student = item
 
-                itemView.setOnClickListener {
-                    val intent = Intent(context, AccountInformationActivity::class.java)
-                    context.startActivity(intent)
-                }
+
+            binding.buttonEdit.setOnClickListener {
+                val intent = Intent(context, AddEditStudentActivity::class.java)
+                context.startActivity(intent)
             }
+            binding.buttonDelete.setOnClickListener {
+                showDeleteConfirm()
+            }
+
+            itemView.setOnClickListener {
+                val intent = Intent(context, DetailStudentInformationActivity::class.java)
+                context.startActivity(intent)
+            }
+
         }
+    }
 
     private fun showDeleteConfirm(){
         val dialog = Dialog(context)
@@ -94,6 +98,7 @@ class AccountAdapter(  private  var context : Context) : RecyclerView.Adapter<Ac
             dialog.dismiss()
         }
         dialog.show()
+
     }
 
 

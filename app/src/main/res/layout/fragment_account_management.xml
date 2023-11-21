@@ -10,7 +10,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="670dp"
         tools:context=".ui.fragments.AccountManagementFragment">
 
         <!-- TODO: Update blank fragment layout -->
@@ -18,10 +18,9 @@
             android:padding="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content">
                 <TextView
                     android:text="Danh sách tài khoản "
@@ -49,7 +48,6 @@
                     android:layout_width="150dp"
                     android:layout_height="30dp"
                     android:layout_gravity="end"
-                    android:layout_marginHorizontal="25dp"
                     android:layout_weight="1"
                     android:focusable="false"
                     android:gravity="center"
@@ -67,12 +65,12 @@
                 <TableRow
                     android:background="@drawable/style_border_row_item"
                     android:layout_width="match_parent"
+                    android:paddingVertical="5dp"
                     android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/textViewID"
                         android:text="Mã số"
-                        android:padding="5dp"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_weight="1"
@@ -81,7 +79,6 @@
                     <TextView
                         android:id="@+id/textViewName"
                         android:text="Name"
-                        android:padding="5dp"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -90,7 +87,6 @@
                         android:id="@+id/textViewRole"
                         android:text="Role"
                         android:layout_weight="1"
-                        android:padding="5dp"
                         android:gravity="center"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp" />
@@ -114,7 +110,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycleViewListAccount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent"/>
             </TableLayout>
         </LinearLayout>
 
