@@ -49,8 +49,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation( "androidx.navigation:navigation-fragment:2.7.5") // Use the version appropriate for your project
     implementation( "androidx.navigation:navigation-ui:2.7.5" )
-    implementation("com.google.firebase:firebase-firestore:24.1.1")
-    implementation("com.google.firebase:firebase-auth:21.0.3")// Use the version appropriate for your project
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -58,4 +57,9 @@ dependencies {
 
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-firestore:24.1.1")
+    implementation("com.google.firebase:firebase-auth:21.0.3")// Use the version appropriate for your project
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
