@@ -8,7 +8,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="650dp"
         tools:context=".ui.fragments.StudentManagementFragment">
 
         <!-- TODO: Update blank fragment layout -->
@@ -19,7 +19,6 @@
             android:layout_height="match_parent">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content">
                 <TextView
                     android:text="Danh sách tài khoản "
@@ -29,40 +28,70 @@
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"/>
-                <ImageButton
-                    android:id="@+id/buttonAdd"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_add"
-                    android:background="@color/white"
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/buttonDownload"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_download"
+                        android:background="@color/white"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageButton
+                        android:id="@+id/buttonUploadFile"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_upload"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageButton
+                        android:id="@+id/buttonAdd"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="10dp"
+                        android:src="@drawable/ic_add"
+                        android:background="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_marginVertical="10dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/editTextID"
-                    android:hint="MSSV"
-                    android:layout_weight="1"
-                    android:textSize="12sp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="2dp"
+                    android:background="@drawable/style_5dp_radius"
+                    android:hint="MSSV"
+                    android:inputType="text"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="5dp"
-                    android:background="@drawable/style_5dp_radius"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    android:textSize="12sp" />
+
                 <EditText
                     android:id="@+id/editTextName"
                     android:hint="Họ và tên"
                     android:textSize="12sp"
                     android:layout_weight="1"
                     android:paddingHorizontal="10dp"
+                    android:inputType="text"
                     android:paddingVertical="5dp"
                     android:layout_marginHorizontal="2dp"
                     android:background="@drawable/style_5dp_radius"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
                 <EditText
                     android:id="@+id/editTextClass"
@@ -72,14 +101,14 @@
                     android:layout_weight="1"
                     android:layout_marginHorizontal="2dp"
                     android:paddingVertical="5dp"
+                    android:inputType="text"
                     android:background="@drawable/style_5dp_radius"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
                 <ImageButton
                     android:id="@+id/buttonSearch"
                     android:src="@drawable/ic_search"
                     android:padding="10dp"
-
                     android:layout_gravity="center|right"
                     android:background="@drawable/style_5dp_radius"
                     android:layout_width="25dp"
@@ -94,34 +123,33 @@
                 <TableRow
                     android:background="@drawable/style_border_row_item"
                     android:layout_width="match_parent"
+                    android:paddingVertical="5dp"
                     android:layout_height="match_parent">
-
                     <TextView
                         android:id="@+id/textViewID"
                         android:text="Mã số"
-                        android:padding="5dp"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content" />
+                        android:layout_width="0dp" />
                     <TextView
                         android:id="@+id/textViewName"
                         android:text="Họ và Tên"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content" />
+                        android:layout_width="0dp" />
                     <TextView
                         android:id="@+id/textViewClass"
                         android:text="Lớp"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content" />
+                        android:layout_width="0dp" />
                     <LinearLayout
                         android:layout_weight="1"
                         android:orientation="horizontal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content">
                         <ImageButton
                             android:layout_weight="1"
@@ -136,7 +164,7 @@
                     </LinearLayout>
                 </TableRow>
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycleViewListAccount"
+                    android:id="@+id/recycleViewListStudent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </TableLayout>

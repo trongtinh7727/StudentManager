@@ -7,7 +7,7 @@ class AccountViewModel : ViewModel() {
     fun generateAccounts(): List<Account> {
         val accounts = mutableListOf<Account>()
 
-        for (i in 1..20) {
+        for (i in 1..30) {
             val id = i.toString()
             val name = "User $i"
             val role = if (i % 2 == 0) "Admin" else "User"
