@@ -91,9 +91,9 @@ class ExampleInstrumentedTest {
                         if (firebaseUser != null) {
                             // Now, you can add the user's information to Firestore as an "account"
                             val account = Account(
-                                id = firebaseUser.uid, // Use the user's UID as the account ID
+                                uid = firebaseUser.uid, // Use the user's UID as the account ID
                                 name = randomName, // Replace with the user's name
-                                code = "acc$i",
+                                id = "acc$i",
                                 email = emailValue,
                                 role = randomRole
                             )

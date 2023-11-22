@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.data.repository.AccountRepository
+import com.google.firebase.auth.FirebaseAuth
 
 class AccountViewModel : ViewModel() {
     private val  accountRepository = AccountRepository()
@@ -30,24 +31,45 @@ class AccountViewModel : ViewModel() {
     }
     fun deleteAccount(account: Account){
         _loadingIndicator.value = true
-        accountRepository.deleteUser(account.id){
-            if (it){
-
-            }
+        accountRepository.deleteUser(account.uid){
             _loadingIndicator.postValue(false)
         }
     }
-    fun generateAccounts(): List<Account> {
-        val accounts = mutableListOf<Account>()
 
-        for (i in 1..20) {
-            val id = i.toString()
-            val name = "User $i"
-            val role = if (i % 2 == 0) "Admin" else "User"
-
-            val account = Account(id, name, role)
-            accounts.add(account)
+    fun isEmailUnique(email: String,onComplete: (Boolean) -> Unit){
+        _loadingIndicator.value = true
+        accountRepository.isEmailUnique(email){
+            onComplete(it)
+            _loadingIndicator.postValue(false)
         }
-        return accounts
+    }
+    fun isCodeUnique(id: String,onComplete: (Boolean) -> Unit){
+        _loadingIndicator.value = true
+        accountRepository.isCodelUnique(id){
+            onComplete(it)
+            _loadingIndicator.postValue(false)
+        }
+    }
+
+    fun createAccount(account: Account,  password:String){
+        _loadingIndicator.value = true
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(account.email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val firebaseUser = task.result?.user
+                    if (firebaseUser != null) {
+                        account.uid = firebaseUser.uid
+                        accountRepository.addAccount(account) { success ->
+                            if (success) {
+                                _loadingIndicator.postValue(false)
+                            }
+                        }
+                    }
+                } else {
+                    val exception = task.exception
+                    if (exception != null) {
+                    }
+                }
+            }
     }
 }

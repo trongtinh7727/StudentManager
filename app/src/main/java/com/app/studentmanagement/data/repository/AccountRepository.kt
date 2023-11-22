@@ -24,7 +24,7 @@ class AccountRepository {
     private val userService = retrofit.create(UserService::class.java)
 
     fun addAccount(account: Account, onComplete: (Boolean) -> Unit) {
-        account.id?.let {
+        account.uid?.let {
             accountCollection.document(it).set(account)
             .addOnSuccessListener {
                 onComplete(true)
@@ -74,6 +74,28 @@ class AccountRepository {
                 }
         }
     }
+
+    fun isEmailUnique(email: String, onComplete: (Boolean) -> Unit) {
+        accountCollection.whereEqualTo("email", email).limit(1).get()
+            .addOnSuccessListener { documents ->
+                onComplete(documents.isEmpty) // If no documents, the email is unique
+            }
+            .addOnFailureListener {
+                onComplete(false) // Handle failure
+            }
+    }
+
+    fun isCodelUnique(code: String, onComplete: (Boolean) -> Unit) {
+        accountCollection.whereEqualTo("id", code).limit(1).get()
+            .addOnSuccessListener { documents ->
+                onComplete(documents.isEmpty) // If no documents, the email is unique
+            }
+            .addOnFailureListener {
+                onComplete(false) // Handle failure
+            }
+    }
+
+
 
     fun deleteUser(uidToDelete: String, onComplete: (Boolean) -> Unit) {
         val request = DeleteUserRequest(uidToDelete)
