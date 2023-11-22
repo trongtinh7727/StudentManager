@@ -16,10 +16,12 @@ import com.app.studentmanagement.R
 import com.app.studentmanagement.databinding.ItemRowAccountBinding
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.ui.activities.AccountInformationActivity
+import com.app.studentmanagement.ui.activities.AddEditAccountActivity
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
 import com.app.studentmanagement.ui.activities.DetailStudentInformationActivity
+import com.app.studentmanagement.viewmodels.AccountViewModel
 
-class AccountAdapter(  private  var context : Context) : RecyclerView.Adapter<AccountAdapter.ViewHolder>()  {
+class AccountAdapter(  private  var context : Context, private val viewModel: AccountViewModel) : RecyclerView.Adapter<AccountAdapter.ViewHolder>()  {
 
 
     private var items: List<Account> = emptyList()
@@ -52,11 +54,11 @@ class AccountAdapter(  private  var context : Context) : RecyclerView.Adapter<Ac
             fun bind(item: Account) {
                 binding.account = item
                 binding.buttonEdit.setOnClickListener {
-                    val intent = Intent(context, AddEditStudentActivity::class.java)
+                    val intent = Intent(context, AddEditAccountActivity::class.java)
                     context.startActivity(intent)
                 }
                 binding.buttonDelete.setOnClickListener {
-                    showDeleteConfirm()
+                    showDeleteConfirm(item)
                 }
 
                 itemView.setOnClickListener {
@@ -66,7 +68,7 @@ class AccountAdapter(  private  var context : Context) : RecyclerView.Adapter<Ac
             }
         }
 
-    private fun showDeleteConfirm(){
+    private fun showDeleteConfirm(account: Account){
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -88,7 +90,8 @@ class AccountAdapter(  private  var context : Context) : RecyclerView.Adapter<Ac
         val buttonBack = dialog.findViewById<TextView>(R.id.buttonBack)
 
         buttonConfirmDelete.setOnClickListener {
-
+            viewModel.deleteAccount(account)
+            dialog.dismiss()
         }
         buttonBack.setOnClickListener {
             dialog.dismiss()

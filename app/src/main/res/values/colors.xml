@@ -5,4 +5,5 @@
     <color name="grey_100">#D4D4E0</color>
     <color name="grey_200">#737993</color>
     <color name="transparent">#00000000</color>
+    <color name="black_200_2">#05000000</color>
 </resources>

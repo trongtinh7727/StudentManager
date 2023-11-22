@@ -20,13 +20,12 @@ class AccountRepository {
         .baseUrl("http://138.2.68.228:3000/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-
+    val accountCollection = db.collection("accounts")
     private val userService = retrofit.create(UserService::class.java)
 
     fun addAccount(account: Account, onComplete: (Boolean) -> Unit) {
-        val userCollection = db.collection("accounts")
         account.id?.let {
-            userCollection.document(it).set(account)
+            accountCollection.document(it).set(account)
             .addOnSuccessListener {
                 onComplete(true)
             }
@@ -37,7 +36,6 @@ class AccountRepository {
     }
 
     fun getAccountByRole(role: Role, onComplete: (List<Account>) -> Unit){
-        val accountCollection = db.collection("accounts")
 
         val query = if (role == Role.All) {
             accountCollection
@@ -65,9 +63,9 @@ class AccountRepository {
     }
 
     fun updateAccount(account: Account, onComplete: (Boolean) -> Unit) {
-        val userCollection = db.collection("accounts")
+
         account.id?.let {
-            userCollection.document(it).set(account, SetOptions.merge())
+            accountCollection.document(it).set(account, SetOptions.merge())
                 .addOnSuccessListener {
                     onComplete(true)
                 }
@@ -83,16 +81,20 @@ class AccountRepository {
         userService.deleteUser(request).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    onComplete(true) // User deleted successfully
+                    accountCollection.document(uidToDelete).delete()
+                        .addOnSuccessListener {
+                            onComplete(true)
+                        }
+                        .addOnFailureListener{
+                            onComplete(false)
+                        }
                 } else {
-                    val x = response
                     onComplete(false) // Handle deletion error
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
                 Log.i("Errr", "onFailure: "+ t.message)
-                val x = t.message
                 onComplete(false) // Handle failure
             }
         })

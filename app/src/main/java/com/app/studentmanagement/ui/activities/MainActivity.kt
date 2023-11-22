@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         var buttonAcc  = headerView.findViewById<Button>(R.id.buttonManagementAccount)
         var buttonStudent  = headerView.findViewById<Button>(R.id.buttonManagementStudent)
 
+
+        replaceFragment(AccountManagementFragment())
         buttonAcc.setOnClickListener {
             replaceFragment(AccountManagementFragment())
             binding.drawableLayout.closeDrawer(GravityCompat.START)

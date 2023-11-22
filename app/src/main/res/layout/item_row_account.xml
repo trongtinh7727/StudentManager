@@ -13,8 +13,9 @@
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/textViewID"
-            android:text="@{account.id}"
+            android:text="@{account.code}"
             android:gravity="center"
+            android:layout_gravity="center"
             android:padding="4dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -23,15 +24,17 @@
             android:id="@+id/textViewName"
             android:text="@{account.name}"
             android:gravity="center"
+            android:layout_gravity="center"
             android:padding="4dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_width="0dp" />
         <TextView
             android:id="@+id/textViewRole"
-            android:text="@{account.role}"
+            android:text="@{account.role.toString()}"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:padding="4dp"
             android:layout_height="wrap_content"
             android:layout_width="0dp" />
