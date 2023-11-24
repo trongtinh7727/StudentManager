@@ -36,6 +36,20 @@ class AccountViewModel : ViewModel() {
         }
     }
 
+    fun updateAccount(account: Account,password: String, onComplete: (Boolean) -> Unit){
+        _loadingIndicator.value = true
+        accountRepository.updateUser(account,password){
+                success ->
+            if (success) {
+                _loadingIndicator.postValue(false)
+                onComplete(true)
+            }else{
+                _loadingIndicator.postValue(false)
+                onComplete(false)
+            }
+        }
+    }
+
     fun isEmailUnique(email: String,onComplete: (Boolean) -> Unit){
         _loadingIndicator.value = true
         accountRepository.isEmailUnique(email){
@@ -51,8 +65,9 @@ class AccountViewModel : ViewModel() {
         }
     }
 
-    fun createAccount(account: Account,  password:String){
+    fun createAccount(account: Account,  password:String, onComplete: (Boolean) -> Unit){
         _loadingIndicator.value = true
+
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(account.email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -62,10 +77,15 @@ class AccountViewModel : ViewModel() {
                         accountRepository.addAccount(account) { success ->
                             if (success) {
                                 _loadingIndicator.postValue(false)
+                                onComplete(true)
+                            }else{
+                                _loadingIndicator.postValue(false)
+                                onComplete(false)
                             }
                         }
                     }
                 } else {
+                    _loadingIndicator.postValue(false)
                     val exception = task.exception
                     if (exception != null) {
                     }

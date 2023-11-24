@@ -71,7 +71,11 @@ class ExampleInstrumentedTest {
 
     // Function to generate a random role
     fun generateRandomRole(): Role {
-        val roles = Role.values()
+        val roles = arrayOf(
+            Role.Manager,
+            Role.Employee,
+            Role.Admin
+        )
         return roles.random()
     }
     @Test

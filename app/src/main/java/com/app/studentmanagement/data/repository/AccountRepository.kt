@@ -4,8 +4,8 @@ import android.util.Log
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.services.DeleteUserRequest
+import com.app.studentmanagement.services.UpdateUserRequest
 import com.app.studentmanagement.services.UserService
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import retrofit2.Call
@@ -99,7 +99,6 @@ class AccountRepository {
 
     fun deleteUser(uidToDelete: String, onComplete: (Boolean) -> Unit) {
         val request = DeleteUserRequest(uidToDelete)
-
         userService.deleteUser(request).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
@@ -114,11 +113,31 @@ class AccountRepository {
                     onComplete(false) // Handle deletion error
                 }
             }
-
             override fun onFailure(call: Call<Void>, t: Throwable) {
                 Log.i("Errr", "onFailure: "+ t.message)
                 onComplete(false) // Handle failure
             }
         })
     }
+
+    fun updateUser(account: Account,newPass: String, onComplete: (Boolean) -> Unit) {
+        val request = UpdateUserRequest(account.uid, account.email,newPass)
+        userService.updateUser(request).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    accountCollection.document(account.uid).update("id",account.id,"email"
+                        ,account.email, "name",account.name, "role",account.role)
+                    onComplete(true)
+                } else {
+                    onComplete(false)
+                }
+            }
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("Error", "onFailure: " + t.message)
+                onComplete(false) // Handle failure
+            }
+        })
+
+    }
+
 }

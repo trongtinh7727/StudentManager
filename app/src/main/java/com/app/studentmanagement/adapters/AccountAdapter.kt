@@ -55,6 +55,7 @@ class AccountAdapter(  private  var context : Context, private val viewModel: Ac
                 binding.account = item
                 binding.buttonEdit.setOnClickListener {
                     val intent = Intent(context, AddEditAccountActivity::class.java)
+                    intent.putExtra("account",item)
                     context.startActivity(intent)
                 }
                 binding.buttonDelete.setOnClickListener {

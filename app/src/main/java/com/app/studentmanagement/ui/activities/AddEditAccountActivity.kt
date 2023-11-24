@@ -23,6 +23,7 @@ class AddEditAccountActivity : AppCompatActivity() {
     private lateinit var viewModel: AccountViewModel
     private lateinit var binding: ActivityAddEditAccountBinding
     private var role: Role = Role.Employee
+    private var existingAccount: Account? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_edit_account)
@@ -49,7 +50,12 @@ class AddEditAccountActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.autoCompleteTextViewOption.setText("Employee", false)
+        existingAccount = intent.getSerializableExtra("account") as Account?
+        if (existingAccount != null) {
+            setupEditMode()
+        } else {
+            setupAddMode()
+        }
 
         //set progressbar
         val progressDialog = createProgressDialog()
@@ -67,10 +73,24 @@ class AddEditAccountActivity : AppCompatActivity() {
                 createAccount()
             }
         })
-        // set activity layout
-        binding.editTextPassword.onFocusChangeListener =
-            View.OnFocusChangeListener { _, hasFocus -> if (hasFocus) binding.editTextPassword.hint = "" else binding.editTextPassword.hint = "Your password" }
     }
+
+    private fun setupAddMode() {
+        binding.autoCompleteTextViewOption.setText("Employee", false)
+    }
+
+    private fun setupEditMode() {
+        existingAccount?.let { account ->
+            binding.editTextName.setText(account.name)
+            binding.editTextID.setText(account.id)
+            binding.editTextEmail.setText(account.email)
+            binding.textViewPass.setText("Mật khẩu mới:")
+            // Set other fields if necessary
+            binding.autoCompleteTextViewOption.setText(account.role.toString(), false)
+            role = account.role
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -83,12 +103,27 @@ class AddEditAccountActivity : AppCompatActivity() {
             email = binding.editTextEmail.text.toString(),
             role = role
         )
-        val password = binding.editTextPassword.text.toString()
-        val confirmPassword = binding.editTextPasswordConfirm.text.toString()
+        val password = binding.editPass.text.toString()
+        val confirmPassword = binding.editPassConfirm.text.toString()
         if (password == confirmPassword) {
-            viewModel.createAccount(account, password)
+            if (existingAccount != null){
+                account.uid = existingAccount!!.uid
+                viewModel.updateAccount(account,password){
+                        isSuccess->
+                    if (isSuccess){
+                        finish()
+                    }
+                }
+            }else{
+                viewModel.createAccount(account, password){
+                        isSuccess->
+                    if (isSuccess){
+                        finish()
+                    }
+                }
+            }
         } else {
-            Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Có lỗi xảy ra!", Toast.LENGTH_SHORT).show()
         }
     }
     fun validateInput(){
@@ -136,21 +171,25 @@ class AddEditAccountActivity : AppCompatActivity() {
             }
         }
 
-        binding.editTextPassword.setOnFocusChangeListener { view, hasFocus ->
-            val enteredInput = binding.editTextPassword.text.toString()
-            if (enteredInput.length < 6 || enteredInput.isEmpty()) {
-                binding.layoutPassword.error = "Mật khẩu phải từ 6 ký tự trở lên!"
-            }else{
-                binding.layoutPassword.error =null
+        binding.editPass.setOnFocusChangeListener { view, hasFocus ->
+            if(!hasFocus){
+                val enteredInput = binding.editPass.text.toString()
+                if (enteredInput.length < 6 || enteredInput.isEmpty()) {
+                    binding.layoutPass.error = "Mật khẩu phải từ 6 ký tự trở lên!"
+                }else{
+                    binding.layoutPass.error =null
+                }
             }
         }
-        binding.editTextPasswordConfirm.setOnFocusChangeListener { view, hasFocus ->
+
+
+        binding.editPassConfirm.setOnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
-                val enteredInput = binding.editTextPasswordConfirm.text.toString()
-                if (!enteredInput.equals(binding.editTextPassword.text.toString())) {
-                    binding.layoutpasswordConfirm.error = "Mật khẩu không khớp!"
+                val enteredInput = binding.editPassConfirm.text.toString()
+                if (!enteredInput.equals(binding.editPass.text.toString())) {
+                    binding.layoutPassConfirm.error = "Mật khẩu không khớp!"
                 }else{
-                    binding.layoutpasswordConfirm.error =null
+                    binding.layoutPassConfirm.error =null
                 }
             }
         }
@@ -171,20 +210,22 @@ class AddEditAccountActivity : AppCompatActivity() {
             return false
         }
 
-        val password = binding.editTextPassword.text.toString()
+        val password = binding.editPass.text.toString()
         if (password.length < 6) {
-            binding.layoutPassword.error = "Mật khẩu phải từ 6 ký tự trở lên!"
-            return false
+            if (existingAccount == null){
+                binding.layoutPass.error = "Mật khẩu phải từ 6 ký tự trở lên!"
+                return false
+            }
         }
 
         // Check Password Confirmation
-        val passwordConfirm = binding.editTextPasswordConfirm.text.toString()
+        val passwordConfirm = binding.editPassConfirm.text.toString()
         if (passwordConfirm != password) {
-            binding.layoutpasswordConfirm.error = "Mật khẩu không khớp!"
+            binding.layoutPassConfirm.error = "Mật khẩu không khớp!"
             return false
         }
 
-        return true // No errors, form is valid
+        return true
     }
 
 
