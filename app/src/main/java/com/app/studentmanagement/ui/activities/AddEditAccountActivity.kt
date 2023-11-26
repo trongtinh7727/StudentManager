@@ -1,6 +1,8 @@
 package com.app.studentmanagement.ui.activities
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -111,6 +113,9 @@ class AddEditAccountActivity : AppCompatActivity() {
                 viewModel.updateAccount(account,password){
                         isSuccess->
                     if (isSuccess){
+                        val returnIntent = Intent()
+                        returnIntent.putExtra("account", account)
+                        setResult(Activity.RESULT_OK, returnIntent)
                         finish()
                     }
                 }
@@ -143,6 +148,12 @@ class AddEditAccountActivity : AppCompatActivity() {
                 if (enteredInput.isEmpty()){
                     binding.layoutID.error = "ID không hợp lệ!"
                 }else{
+                    if (existingAccount != null){
+                        if (enteredInput.equals(existingAccount!!.id)){
+                            binding.layoutID.error = null
+                            return@setOnFocusChangeListener
+                        }
+                    }
                     viewModel.isCodeUnique(enteredInput) { isSuccess ->
                         if (!isSuccess) {
                             binding.layoutID.error = "ID đã tồn tại!"
@@ -160,6 +171,12 @@ class AddEditAccountActivity : AppCompatActivity() {
                 if (!isValidEmail(enteredInput)) {
                     binding.layoutEmail.error = "Email không hợp lệ!"
                 }else {
+                    if (existingAccount != null){
+                        if (enteredInput.equals(existingAccount!!.email)){
+                            binding.layoutEmail.error = null
+                            return@setOnFocusChangeListener
+                        }
+                    }
                     viewModel.isEmailUnique(enteredInput) { isSuccess ->
                         if (!isSuccess) {
                             binding.layoutEmail.error = "Email đã tồn tại!"

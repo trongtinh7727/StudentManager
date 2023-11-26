@@ -64,6 +64,7 @@ class AccountAdapter(  private  var context : Context, private val viewModel: Ac
 
                 itemView.setOnClickListener {
                     val intent = Intent(context, AccountInformationActivity::class.java)
+                    intent.putExtra("account",item)
                     context.startActivity(intent)
                 }
             }

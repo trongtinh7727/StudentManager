@@ -14,9 +14,6 @@ class AddEditStudentActivity : AppCompatActivity() {
         val binding: ActivityAddEditStudentBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_edit_student)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-
-
     }
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()

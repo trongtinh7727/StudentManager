@@ -25,18 +25,15 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_height="1dp"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar" />
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.cardview.widget.CardView
         android:layout_margin="20dp"
         app:cardCornerRadius="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,10 +46,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Role :"
-                    android:layout_marginVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    style="@style/textViewTitle2"/>
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="wrap_content"
@@ -79,7 +73,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:text="Họ và tên :"
                     android:layout_marginVertical="3dp"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -87,75 +81,56 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_weight="1"
                     android:id="@+id/layoutName"
                     android:background="@color/white"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="custom">
                     <EditText
                         android:id="@+id/editTextName"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/style_edit_selected"
-                        android:drawablePadding="10dp"
-                        android:padding="15dp" />
+                        style="@style/editTextStyle"
+                        android:background="@drawable/style_edit_selected" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mã số :"
-                    android:layout_marginVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    style="@style/textViewTitle2"/>
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/layoutID"
                     android:background="@color/white"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="custom">
                     <EditText
                         android:id="@+id/editTextID"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/style_edit_selected"
-                        android:drawablePadding="10dp"
-                        android:padding="15dp" />
+                        style="@style/editTextStyle"
+                        android:background="@drawable/style_edit_selected" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email :"
-                    android:layout_marginVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    style="@style/textViewTitle2"/>
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/layoutEmail"
                     android:background="@color/white"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="custom">
 
                     <EditText
                         android:id="@+id/editTextEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        style="@style/editTextStyle"
                         android:inputType="textEmailAddress"
-                        android:background="@drawable/style_edit_selected"
-                        android:drawablePadding="10dp"
-                        android:padding="15dp" />
+                        android:background="@drawable/style_edit_selected" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-
 
                 <TextView
                     android:id="@+id/textViewPass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mật khẩu :"
-                    android:layout_marginVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    style="@style/textViewTitle2"
+                    />
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -166,12 +141,9 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
                     <EditText
                         android:id="@+id/editPass"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        style="@style/editTextStyle"
                         android:inputType="textPassword"
-                        android:background="@drawable/style_edit_selected"
-                        android:drawablePadding="10dp"
-                        android:padding="15dp" />
+                        android:background="@drawable/style_edit_selected"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -179,10 +151,9 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nhập lại mật khẩu :"
-                    android:layout_marginVertical="3dp"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    style="@style/textViewTitle2"
+                    />
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -193,12 +164,9 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
                     <EditText
                         android:id="@+id/editPassConfirm"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        style="@style/editTextStyle"
                         android:inputType="textPassword"
-                        android:background="@drawable/style_edit_selected"
-                        android:drawablePadding="10dp"
-                        android:padding="15dp" />
+                        android:background="@drawable/style_edit_selected"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -206,13 +174,12 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:text="Lưu"
                     android:background="@drawable/style_stoke_click"
                     android:textColor="#004AB9"
-                    android:paddingHorizontal="80dp"
-                    android:layout_marginVertical="20dp"
                     android:layout_gravity="center"
+                    style="@style/buttonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-        </ScrollView>
     </androidx.cardview.widget.CardView>
+    </ScrollView>
 </LinearLayout>
 </layout>
