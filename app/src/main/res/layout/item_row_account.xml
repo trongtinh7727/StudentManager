@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/textViewID"
-            android:text="@{account.code}"
+            android:text="@{account.id}"
             android:gravity="center"
             android:layout_gravity="center"
             android:padding="4dp"

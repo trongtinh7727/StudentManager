@@ -71,7 +71,11 @@ class ExampleInstrumentedTest {
 
     // Function to generate a random role
     fun generateRandomRole(): Role {
-        val roles = Role.values()
+        val roles = arrayOf(
+            Role.Manager,
+            Role.Employee,
+            Role.Admin
+        )
         return roles.random()
     }
     @Test
@@ -91,9 +95,9 @@ class ExampleInstrumentedTest {
                         if (firebaseUser != null) {
                             // Now, you can add the user's information to Firestore as an "account"
                             val account = Account(
-                                id = firebaseUser.uid, // Use the user's UID as the account ID
+                                uid = firebaseUser.uid, // Use the user's UID as the account ID
                                 name = randomName, // Replace with the user's name
-                                code = "acc$i",
+                                id = "acc$i",
                                 email = emailValue,
                                 role = randomRole
                             )
