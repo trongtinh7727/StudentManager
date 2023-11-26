@@ -24,8 +24,9 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/imageAvatar"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
                     android:layout_margin="15dp"
                     android:background="@null"
                     android:src="@drawable/avt" />
@@ -46,10 +47,10 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textViewMSAD"
+                        android:id="@+id/textViewID"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MSAD : 52100846"
+                        android:text="ID : 52100846"
                         android:textColor="@color/black" />
 
                     <TextView

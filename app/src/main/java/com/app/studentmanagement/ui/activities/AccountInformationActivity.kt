@@ -23,6 +23,7 @@ import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.databinding.ActivityAccountInformationBinding
 import com.app.studentmanagement.viewmodels.AccountViewModel
+import com.bumptech.glide.Glide
 
 class AccountInformationActivity : AppCompatActivity() {
      private  lateinit var binding: ActivityAccountInformationBinding
@@ -89,7 +90,9 @@ class AccountInformationActivity : AppCompatActivity() {
     }
     private fun setupData() {
         account?.let { account ->
-
+            Glide.with(this)
+                .load(account.avatarUrl)
+                .into(binding.imageAvatar)
             binding.textViewName.setText(account.name)
             binding.editTextID.setText(account.id)
             binding.editTextID.isEnabled = false
