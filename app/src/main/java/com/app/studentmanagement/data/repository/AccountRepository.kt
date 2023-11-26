@@ -35,6 +35,25 @@ class AccountRepository {
         }
     }
 
+    fun getAccountByUid(uid: String, onComplete: (Account?) -> Unit) {
+        val docRef = accountCollection.document(uid)
+
+        val registration = docRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+            if (firebaseFirestoreException != null) {
+                onComplete(null)
+                return@addSnapshotListener
+            }
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                val account = documentSnapshot.toObject(Account::class.java)
+                onComplete(account)
+            } else {
+                onComplete(null)
+            }
+        }
+    }
+
+
     fun getAccountByRole(role: Role, onComplete: (List<Account>) -> Unit){
 
         val query = if (role == Role.All) {
