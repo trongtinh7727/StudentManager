@@ -37,6 +37,8 @@ class AccountInformationActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_account_information)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
+
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
 
         account = intent.getSerializableExtra("account") as Account?
