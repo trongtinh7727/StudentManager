@@ -151,7 +151,6 @@ class StudentManagementFragment : Fragment() {
             putExtra(Intent.EXTRA_AUTO_LAUNCH_SINGLE_CHOICE, true)
             action = Intent.ACTION_GET_CONTENT
         }
-
         csvFileLauncher.launch(intent)
     }
 

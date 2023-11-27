@@ -202,7 +202,7 @@
                                 android:layout_gravity="center"
                                 android:layout_height="wrap_content">
                                 <ImageButton
-                                    android:id="@+id/buttonDownload"
+                                    android:id="@+id/buttonImport"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_download"
                                     android:background="@color/white"
@@ -210,14 +210,7 @@
                                     android:layout_marginHorizontal="5dp"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
-                                <ImageButton
-                                    android:id="@+id/buttonUploadFile"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_upload"
-                                    android:layout_weight="1"
-                                    android:background="@color/white"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
+
                                 <ImageButton
                                     android:id="@+id/buttonAdd"
                                     android:layout_gravity="center"

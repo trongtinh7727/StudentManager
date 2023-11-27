@@ -92,7 +92,32 @@ class StudentViewModel : ViewModel() {
             _loadingIndicator.postValue(false)
         }
     }
+    fun readCertificatesCSVFile(uri: Uri, contentResolver: ContentResolver):MutableList<Certificate>{
+        val inputStream = contentResolver.openInputStream(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val certificates = mutableListOf<Certificate>()
 
+        try {
+            var line: String? = reader.readLine()
+            while (line != null) {
+                val tokens = line.split(",")
+                if (tokens.size >=2) {
+                    val certificateCode = tokens[0]
+                    val certificateName = tokens[1]
+                    val certificate = Certificate(code = certificateCode, name = certificateName)
+                    certificates.add(certificate)
+
+                }
+                line = reader.readLine()
+            }
+
+            reader.close()
+            return certificates
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return mutableListOf()
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     fun readCSVFile(uri: Uri, contentResolver: ContentResolver, facultyMap:MutableMap<String,String>): MutableList<Student> {
         val inputStream = contentResolver.openInputStream(uri)

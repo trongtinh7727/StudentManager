@@ -1,14 +1,23 @@
 package com.app.studentmanagement.ui.activities
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,8 +30,12 @@ import com.app.studentmanagement.databinding.ActivityAddEditStudentBinding
 import com.app.studentmanagement.viewmodels.StudentViewModel
 
 class AddEditStudentActivity : AppCompatActivity() {
+    private val REQUEST_PERMISSION_CODE = 101
+
     private lateinit var viewModel: StudentViewModel
     private lateinit var binding: ActivityAddEditStudentBinding
+    private lateinit var csvFileLauncher: ActivityResultLauncher<Intent>
+
     private var listCertificate: MutableList<Certificate> = ArrayList()
     val adapter = CertificateAdapter()
     private var existingStudent: Student? = null
@@ -79,6 +92,82 @@ class AddEditStudentActivity : AppCompatActivity() {
             faculty = faculties[position]
             facultyCode = facultiesCode[position]
         }
+
+        csvFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                data?.data?.let { uri ->
+                    listCertificate =   viewModel.readCertificatesCSVFile(uri, contentResolver)
+                    adapter.updateList(listCertificate)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+
+        binding.buttonImport.setOnClickListener(View.OnClickListener {
+            if (checkPermissions()) {
+                openCsvFilePicker()
+            } else {
+                requestPermissions()
+            }
+        })
+    }
+    private fun checkPermissions(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11 and above, check for MANAGE_EXTERNAL_STORAGE permission
+            return Environment.isExternalStorageManager()
+        } else {
+            // For Android 10 and below, check for read and write permissions
+            val readPermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            val writePermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            return readPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+
+    private fun requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            startActivity(intent)
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                REQUEST_PERMISSION_CODE
+            )
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCsvFilePicker()
+            } else {
+            }
+        }
+    }
+    private fun openCsvFilePicker() {
+        val intent = Intent().apply {
+            type = "*/*"
+            putExtra(Intent.EXTRA_AUTO_LAUNCH_SINGLE_CHOICE, true)
+            action = Intent.ACTION_GET_CONTENT
+        }
+        csvFileLauncher.launch(intent)
     }
     fun saveStudent() {
         val email = binding.editTextEmail.text.toString()
