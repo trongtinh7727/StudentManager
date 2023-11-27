@@ -31,6 +31,8 @@ class AddEditAccountActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_edit_account)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
+
 
         //view model
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
