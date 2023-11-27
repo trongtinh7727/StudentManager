@@ -1,20 +1,31 @@
 package com.app.studentmanagement
 
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
+import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.data.repository.AccountRepository
+import com.app.studentmanagement.data.repository.StudentRepository
 import com.google.firebase.auth.FirebaseAuth
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     val accountRepository = AccountRepository()
+    val studentRepository = StudentRepository()
+    // Context of the app under test.
+    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+    // Get the faculties and facultiesCode arrays from resources
+    val faculties = appContext.resources.getStringArray(R.array.faculties)
+    val facultiesCode = appContext.resources.getStringArray(R.array.facultiesCode)
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -68,6 +79,7 @@ class ExampleInstrumentedTest {
         )
         return names[i]
     }
+
 
     // Function to generate a random role
     fun generateRandomRole(): Role {
@@ -127,4 +139,32 @@ class ExampleInstrumentedTest {
         assert(createdAccounts.all { it })
     }
 
+    @Test
+    fun createStudet(){
+        val accountsToCreate = 29
+
+        // Create 20 accounts
+        for (i in 1..accountsToCreate) {
+            val emailValue = "student$i@app.com"
+            val randomName = generateRandomName(i)
+            val randomIndex = Random.nextInt(faculties.size)
+            val randomFaculty = faculties[randomIndex]
+            val randomFacultyCode = facultiesCode[randomIndex]
+
+
+            val student = Student(
+                id = "SV-$i",
+                email = emailValue,
+                fullName = randomName,
+                classRoom = "210$randomFacultyCode",
+                faculty = randomFaculty
+            )
+
+            studentRepository.addStudent(student,randomFacultyCode){
+                Log.i("Test", "createStudet: ${student.fullName}")
+            }
+            Thread.sleep(1000)
+        }
+
+    }
 }

@@ -16,6 +16,11 @@ class AccountViewModel : ViewModel() {
     val loadingIndicator: LiveData<Boolean>
         get() = _loadingIndicator
 
+    private val _currentUser = MutableLiveData<Account>()
+    val  currentUser: LiveData<Account>
+        get() = _currentUser
+
+
     private val _accounts = MutableLiveData<List<Account>>()
     val  accounts: LiveData<List<Account>>
         get() = _accounts
@@ -27,6 +32,19 @@ class AccountViewModel : ViewModel() {
                 _accounts.postValue(it)
             }
             _loadingIndicator.postValue(false)
+        }
+    }
+
+    fun setCurrentUser(){
+        _loadingIndicator.value = true
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            accountRepository.getAccountByUid(uid){
+                if (it != null){
+                    _currentUser.postValue(it)
+                }
+                _loadingIndicator.postValue(false)
+            }
         }
     }
     fun deleteAccount(account: Account){
@@ -64,6 +82,21 @@ class AccountViewModel : ViewModel() {
             _loadingIndicator.postValue(false)
         }
     }
+
+    fun login(emailValue: String, passwordValue:String, onComplete: (Boolean) -> Unit) {
+        _loadingIndicator.value = true
+        if (!emailValue.isNullOrEmpty() && !passwordValue.isNullOrEmpty()) {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(emailValue, passwordValue)
+                .addOnCompleteListener { task ->
+                    onComplete(true)
+                    _loadingIndicator.value = false
+                }
+        } else {
+            onComplete(false)
+            _loadingIndicator.value = false
+        }
+    }
+
 
     fun createAccount(account: Account,  password:String, onComplete: (Boolean) -> Unit){
         _loadingIndicator.value = true

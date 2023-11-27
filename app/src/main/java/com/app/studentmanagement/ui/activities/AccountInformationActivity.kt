@@ -1,6 +1,7 @@
 package com.app.studentmanagement.ui.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -23,6 +24,7 @@ import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.databinding.ActivityAccountInformationBinding
 import com.app.studentmanagement.viewmodels.AccountViewModel
+import com.bumptech.glide.Glide
 
 class AccountInformationActivity : AppCompatActivity() {
      private  lateinit var binding: ActivityAccountInformationBinding
@@ -37,6 +39,8 @@ class AccountInformationActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_account_information)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
+
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
 
         account = intent.getSerializableExtra("account") as Account?
@@ -86,10 +90,36 @@ class AccountInformationActivity : AppCompatActivity() {
             resultLauncher.launch(intent)
         })
 
+        binding.buttonDelete.setOnClickListener(View.OnClickListener {
+            account?.let { it1 -> showDeleteConfirm(it1) }
+        })
+
+        //set progressbar
+        val progressDialog = createProgressDialog()
+        viewModel.loadingIndicator.observe(this){
+            if (it){
+                progressDialog.show()
+            }else{
+                progressDialog.dismiss()
+            }
+        }
+
+    }
+
+    private fun createProgressDialog(): AlertDialog {
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_progress,null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return  dialog
     }
     private fun setupData() {
         account?.let { account ->
-
+            Glide.with(this)
+                .load(account.avatarUrl)
+                .into(binding.imageAvatar)
             binding.textViewName.setText(account.name)
             binding.editTextID.setText(account.id)
             binding.editTextID.isEnabled = false
@@ -127,6 +157,12 @@ class AccountInformationActivity : AppCompatActivity() {
         buttonConfirmDelete.setOnClickListener {
             viewModel.deleteAccount(account)
             dialog.dismiss()
+            viewModel.loadingIndicator.observe(this){
+                if (!it){
+                    finish()
+                }
+            }
+            finish()
         }
         buttonBack.setOnClickListener {
             dialog.dismiss()

@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="student"
+            type="com.app.studentmanagement.data.models.Student" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,6 +20,7 @@
             android:layout_height="match_parent">
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:titleTextColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <View
@@ -26,7 +29,7 @@
                 android:layout_height="1dp"
                 android:background="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="@+id/toolbar" />
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_marginBottom="50dp"
                 android:layout_height="match_parent">
@@ -45,7 +48,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp">
-
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -67,18 +69,56 @@
                                 android:layout_marginEnd="-30dp"
                                 android:background="@null"
                                 android:src="@drawable/ic_upload_avt" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="20dp"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/buttonEdit"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@color/transparent"
+                                    android:src="@drawable/ic_pen" />
+
+                                <ImageButton
+                                    android:id="@+id/buttonDelete"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@color/transparent"
+                                    android:src="@drawable/ic_delete" />
+                            </LinearLayout>
                         </RelativeLayout>
 
                         <TextView
-                            android:id="@+id/textViewName"
+                            android:id="@+id/textViewID"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:layout_gravity="center"
-                            android:layout_marginTop="5dp"
-                            android:text="Phùng thị Ngẻ"
-                            android:textColor="@color/black"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
+                            android:text="@{'#'+student.id}"
+                            />
+                        <EditText
+                            android:id="@+id/textViewName"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:inputType="text"
+                            android:hint="Họ và tên"
+                            android:background="@color/white"
+                            android:text="@{student.fullName}"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="20dp"/>
+
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -89,164 +129,78 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mã số"
-                                android:textColor="@color/black"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <androidx.cardview.widget.CardView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginHorizontal="2dp"
-                                    android:layout_marginVertical="5dp"
-                                    android:layout_weight="1"
-                                    app:cardCornerRadius="25dp">
-
-                                    <EditText
-                                        android:id="@+id/editTextID"
-                                        android:layout_width="match_parent"
-                                        android:enabled="false"
-                                        android:layout_height="40dp"
-                                        android:hint="Your ID"
-                                        android:background="@drawable/style_edit_selected"
-                                        android:padding="10dp" />
-                                </androidx.cardview.widget.CardView>
-
-                                <ImageButton
-                                    android:id="@+id/buttonEdit"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginHorizontal="10dp"
-                                    android:background="@null"
-                                    android:src="@drawable/ic_pen" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
                                 android:text="Email"
+                                android:layout_marginVertical="3dp"
                                 android:textColor="@color/black"
-                                android:textSize="20sp"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
-
-                            <LinearLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <androidx.cardview.widget.CardView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginHorizontal="2dp"
-                                    android:layout_marginVertical="5dp"
-                                    android:layout_weight="1"
-                                    app:cardCornerRadius="25dp">
-
-                                    <EditText
-                                        android:id="@+id/editTextEmail"
-                                        android:layout_width="match_parent"
-                                        android:enabled="false"
-                                        android:background="@drawable/style_edit_selected"
-                                        android:layout_height="40dp"
-                                        android:hint="Your Email"
-                                        android:padding="10dp" />
-                                </androidx.cardview.widget.CardView>
-
-                                <ImageButton
-                                    android:id="@+id/buttonEmail"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginHorizontal="10dp"
-                                    android:background="@null"
-                                    android:src="@drawable/ic_pen" />
-                            </LinearLayout>
+                                android:layout_weight="1"
+                                android:id="@+id/layoutEmail"
+                                android:background="@color/white"
+                                app:endIconMode="custom">
+                                <EditText
+                                    android:text="@{student.email}"
+                                    android:id="@+id/editTextEmail"
+                                    android:enabled="false"
+                                    style="@style/editTextStyle"
+                                    android:inputType="textEmailAddress"
+                                    android:background="@drawable/style_edit_selected" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Khoa"
+                                android:layout_marginVertical="3dp"
                                 android:textColor="@color/black"
-                                android:textSize="20sp"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <androidx.cardview.widget.CardView
+                                android:orientation="vertical">
+
+                                <AutoCompleteTextView
+                                    android:id="@+id/autoCompleteTextViewOption"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginHorizontal="2dp"
+                                    android:layout_gravity="end"
                                     android:layout_weight="1"
-                                    android:layout_marginVertical="5dp"
-                                    app:cardCornerRadius="25dp">
+                                    android:focusable="false"
+                                    android:gravity="center"
+                                    android:inputType="none"
+                                    android:padding="8dp"
+                                    android:layout_margin="8dp"
+                                    android:textSize="15sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                                    <EditText
-                                        android:layout_width="match_parent"
-                                        android:id="@+id/editTextDepartment"
-                                        android:layout_height="40dp"
-                                        android:background="@drawable/style_edit_selected"
-                                        android:drawablePadding="10dp"
-                                        android:hint="Department"
-                                        android:enabled="false"
-                                        android:padding="10dp" />
-                                </androidx.cardview.widget.CardView>
-
-                                <ImageButton
-                                    android:id="@+id/buttonDepartment"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginHorizontal="10dp"
-                                    android:background="@null"
-                                    android:src="@drawable/ic_pen" />
-                            </LinearLayout>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Lớp"
+                                android:layout_marginVertical="3dp"
                                 android:textColor="@color/black"
-                                android:textSize="20sp"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
-
-                            <LinearLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:orientation="horizontal">
+                                android:layout_weight="1"
+                                android:id="@+id/layoutClass"
+                                android:background="@color/white"
+                                app:endIconMode="custom">
+                                <EditText
+                                    android:id="@+id/editTextClass"
+                                    style="@style/editTextStyle"
+                                    android:enabled="false"
+                                    android:text="@{student.classRoom}"
+                                    android:background="@drawable/style_edit_selected" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                                <androidx.cardview.widget.CardView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:layout_marginVertical="5dp"
-                                    app:cardCornerRadius="25dp">
-                                    <EditText
-                                        android:layout_width="match_parent"
-                                        android:id="@+id/editTextClass"
-                                        android:layout_height="40dp"
-                                        android:background="@drawable/style_edit_selected"
-                                        android:drawablePadding="10dp"
-                                        android:hint="Class"
-                                        android:enabled="false"
-                                        android:padding="10dp" />
-                                </androidx.cardview.widget.CardView>
 
-                                <ImageButton
-                                    android:id="@+id/buttonClass"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginHorizontal="10dp"
-                                    android:background="@null"
-                                    android:src="@drawable/ic_pen" />
-                            </LinearLayout>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -254,7 +208,7 @@
                             android:layout_marginVertical="10dp"
                             android:layout_height="wrap_content">
                             <TextView
-                                android:text="Danh sách tài khoản "
+                                android:text="Danh sách chứng chỉ"
                                 android:textColor="@color/black"
                                 android:textStyle="bold"
                                 android:textSize="20dp"
@@ -267,28 +221,10 @@
                                 android:layout_gravity="center"
                                 android:layout_height="wrap_content">
                                 <ImageButton
-                                    android:id="@+id/buttonDownload"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_download"
-                                    android:background="@color/white"
-                                    android:layout_weight="1"
-                                    android:layout_marginHorizontal="5dp"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-                                <ImageButton
-                                    android:id="@+id/buttonUploadFile"
+                                    android:id="@+id/buttonImportFile"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_upload"
                                     android:layout_weight="1"
-                                    android:background="@color/white"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-                                <ImageButton
-                                    android:id="@+id/buttonAdd"
-                                    android:layout_gravity="center"
-                                    android:layout_weight="1"
-                                    android:layout_marginHorizontal="5dp"
-                                    android:src="@drawable/ic_add"
                                     android:background="@color/white"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
@@ -299,7 +235,7 @@
                             android:id="@+id/tableLayout"
                             android:layout_margin="10dp"
                             android:layout_width="match_parent"
-                            android:stretchColumns="1,2,3"
+                            android:stretchColumns="3"
                             android:layout_height="wrap_content">
                             <TableRow
                                 android:background="@drawable/style_border_row_item"
@@ -308,38 +244,28 @@
                                 <TextView
                                     android:id="@+id/textViewTime"
                                     android:text="ID"
+                                    android:textSize="15sp"
                                     android:gravity="center"
                                     android:layout_weight="1"
                                     android:layout_height="wrap_content"
-                                    android:layout_width="wrap_content" />
+                                    android:layout_width="0dp" />
                                 <TextView
                                     android:text="Name"
                                     android:gravity="center"
+                                    android:textSize="15sp"
                                     android:layout_weight="1"
                                     android:layout_height="wrap_content"
-                                    android:layout_width="wrap_content" />
-
+                                    android:layout_width="0dp" />
                             </TableRow>
                             <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recycleViewListHistoryLogin"
+                                android:id="@+id/recycleViewListCerfiticate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"/>
                         </TableLayout>
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/buttonSave"
-                            android:text="Lưu"
-                            android:background="@drawable/style_stoke_click"
-                            android:textColor="#004AB9"
-                            android:paddingHorizontal="80dp"
-                            android:layout_marginVertical="20dp"
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
 
 
