@@ -10,13 +10,30 @@ class StudentRepository {
     private val db = FirebaseFirestore.getInstance()
     private val studentCollection = db.collection("students")
 
-    fun addStudent(student: Student, onComplete: (Boolean) -> Unit) {
-        student.id.takeIf { it.isNotEmpty() }?.let {
-            studentCollection.document(it).set(student)
+    fun addStudent(student: Student, facultyCode: Int, onComplete: (Boolean) -> Unit) {
+        val countDocRef = db.collection("facultyCounts").document(facultyCode.toString())
+
+        // Transaction to retrieve and increment the count
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(countDocRef)
+            val currentCount = snapshot.getLong("count") ?: 0
+            val newCount = currentCount + 1
+            transaction.set(countDocRef, mapOf("count" to newCount))
+
+            newCount
+        }.addOnSuccessListener { newCount ->
+            // Create a new student ID using the faculty code and new count
+            val studentId = "${facultyCode}$newCount"
+            student.id = studentId
+
+            studentCollection.document(studentId).set(student)
                 .addOnSuccessListener { onComplete(true) }
                 .addOnFailureListener { onComplete(false) }
-        } ?: onComplete(false)
+        }.addOnFailureListener {
+            onComplete(false)
+        }
     }
+
 
     fun updateStudent(student: Student, onComplete: (Boolean) -> Unit) {
         student.id.takeIf { it.isNotEmpty() }?.let {

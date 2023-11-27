@@ -58,7 +58,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
                     <AutoCompleteTextView
                         android:id="@+id/autoCompleteTextViewOption"
-                        android:layout_width="150dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:layout_weight="1"

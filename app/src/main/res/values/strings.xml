@@ -3,6 +3,46 @@
     <string name="navigation_drawer_open">Open drawer description</string>
     <string name="navigation_drawer_close">Close drawer description</string>
     <string name="app_name">MA</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="faculties">
+        <item>Công nghệ thông tin</item>
+        <item>Dược</item>
+        <item>Điện - Điện tử</item>
+        <item>Kế toán</item>
+        <item>Khoa học thể thao</item>
+        <item>Khoa học ứng dụng</item>
+        <item>Toán - Thống kê</item>
+        <item>Kỹ thuật công trình</item>
+        <item>Luật</item>
+        <item>Mỹ thuật công nghiệp</item>
+        <item>Tài chính - Ngân hàng</item>
+        <item>Lao động và Công đoàn</item>
+        <item>Ngoại ngữ</item>
+        <item>Quản trị kinh doanh</item>
+    </string-array>
+
+    <integer-array name="facultiesCode">
+        <item>101</item>
+        <item>102</item>
+        <item>103</item>
+        <item>104</item>
+        <item>105</item>
+        <item>106</item>
+        <item>107</item>
+        <item>108</item>
+        <item>109</item>
+        <item>110</item>
+        <item>111</item>
+        <item>112</item>
+        <item>113</item>
+        <item>114</item>
+    </integer-array>
+
+
+    <string-array name="roles">
+        <item>Admin</item>
+        <item>Manager</item>
+        <item>Employee</item>
+    </string-array>
 </resources>

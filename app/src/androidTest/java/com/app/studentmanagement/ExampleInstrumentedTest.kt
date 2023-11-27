@@ -14,11 +14,18 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     val accountRepository = AccountRepository()
     val studentRepository = StudentRepository()
+    // Context of the app under test.
+    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+    // Get the faculties and facultiesCode arrays from resources
+    val faculties = appContext.resources.getStringArray(R.array.faculties)
+    val facultiesCode = appContext.resources.getIntArray(R.array.facultiesCode)
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -72,15 +79,7 @@ class ExampleInstrumentedTest {
         )
         return names[i]
     }
-    fun generateRandomFaculty(): String {
-        val names = listOf(
-            "Công nghệ thông tin",
-            "Điện - điện tử",
-            "Mỹ thuật công nghiệp",
-            "Dược"
-        )
-        return names.random()
-    }
+
 
     // Function to generate a random role
     fun generateRandomRole(): Role {
@@ -148,18 +147,20 @@ class ExampleInstrumentedTest {
         for (i in 1..accountsToCreate) {
             val emailValue = "student$i@app.com"
             val randomName = generateRandomName(i)
-            val faculty = generateRandomFaculty()
+            val randomIndex = Random.nextInt(faculties.size)
+            val randomFaculty = faculties[randomIndex]
+            val randomFacultyCode = facultiesCode[randomIndex]
 
 
             val student = Student(
                 id = "SV-$i",
                 email = emailValue,
                 fullName = randomName,
-                classRoom = "21050$i",
-                faculty = faculty
+                classRoom = "210$randomFacultyCode",
+                faculty = randomFaculty
             )
 
-            studentRepository.addStudent(student){
+            studentRepository.addStudent(student,randomFacultyCode){
                 Log.i("Test", "createStudet: ${student.fullName}")
             }
             Thread.sleep(1000)

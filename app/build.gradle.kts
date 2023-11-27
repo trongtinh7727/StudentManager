@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId = "com.app.studentmanagement"
-        minSdk = 26
-        targetSdk = 33
+        minSdk = 30
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

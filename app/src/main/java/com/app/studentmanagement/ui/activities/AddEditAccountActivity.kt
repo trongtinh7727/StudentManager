@@ -36,12 +36,13 @@ class AddEditAccountActivity : AppCompatActivity() {
 
         //view model
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
-        val options = arrayOf("Admin", "Manager", "Employee") // Replace with your data
-        val adapterInputRole = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options)
+        val roles = resources.getStringArray(R.array.roles)
+
+        val adapterInputRole = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, roles)
         val autoCompleteTextView = binding.autoCompleteTextViewOption
         autoCompleteTextView.setAdapter(adapterInputRole)
         autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = options[position]
+            val selectedItem = roles[position]
             when (selectedItem) {
                 "Admin" ->{
                     role = Role.Admin

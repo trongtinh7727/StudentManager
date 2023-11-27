@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 data class Student @RequiresApi(Build.VERSION_CODES.O) constructor(
-    val id: String = "",
+    var id: String = "",
     val email: String = "",
     val fullName: String = "",
     val faculty: String ="",

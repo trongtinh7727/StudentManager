@@ -47,8 +47,8 @@ class DetailStudentInformationActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
         existingStudent = intent.getSerializableExtra("student") as Student?
         if (existingStudent!=null){
-            binding.editTextID.isEnabled = false
             binding.student = existingStudent
+            binding.autoCompleteTextViewOption.setText(existingStudent!!.faculty)
             listCertificate = existingStudent!!.certificates
             adapter.notifyDataSetChanged()
         }
@@ -66,9 +66,9 @@ class DetailStudentInformationActivity : AppCompatActivity() {
                 if (data != null){
                     existingStudent = data.getSerializableExtra("student") as Student?
                     if (existingStudent!=null){
-                        binding.editTextID.isEnabled = false
                         binding.student = existingStudent
                         listCertificate = existingStudent!!.certificates
+                        binding.autoCompleteTextViewOption.setText(existingStudent!!.faculty)
                         adapter.updateList(listCertificate)
                         adapter.notifyDataSetChanged()
                     }

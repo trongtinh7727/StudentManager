@@ -36,7 +36,7 @@
                         android:layout_gravity="center"
                         android:layout_height="wrap_content">
                         <ImageButton
-                            android:id="@+id/buttonDownload"
+                            android:id="@+id/buttonImport"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_download"
                             android:background="@color/white"
@@ -45,7 +45,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <ImageButton
-                            android:id="@+id/buttonUploadFile"
+                            android:id="@+id/buttonExport"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_upload"
                             android:layout_weight="1"

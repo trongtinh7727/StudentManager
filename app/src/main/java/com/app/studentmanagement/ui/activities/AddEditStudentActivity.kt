@@ -8,12 +8,14 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.studentmanagement.R
 import com.app.studentmanagement.adapters.CertificateAdapter
 import com.app.studentmanagement.data.models.Certificate
+import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.ActivityAddEditStudentBinding
 import com.app.studentmanagement.viewmodels.StudentViewModel
@@ -24,6 +26,8 @@ class AddEditStudentActivity : AppCompatActivity() {
     private var listCertificate: MutableList<Certificate> = ArrayList()
     val adapter = CertificateAdapter()
     private var existingStudent: Student? = null
+    var faculty : String = ""
+    var facultyCode : Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_edit_student)
@@ -63,70 +67,60 @@ class AddEditStudentActivity : AppCompatActivity() {
             saveStudent()
         })
 
+        val faculties = resources.getStringArray(R.array.faculties)
+        val facultiesCode = resources.getIntArray(R.array.facultiesCode)
 
+        val adapterInputRole = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, faculties)
+        val autoCompleteTextView = binding.autoCompleteTextViewOption
+        autoCompleteTextView.setAdapter(adapterInputRole)
+        autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
+            faculty = faculties[position]
+            facultyCode = facultiesCode[position]
+        }
     }
     fun saveStudent() {
-        val id = binding.editTextID.text.toString()
+        val id = binding.textViewID.text.toString()
         val email = binding.editTextEmail.text.toString()
-        val faculty = binding.editTextFaculty.text.toString()
+        val faculty = faculty
         val classRoom = binding.editTextClass.text.toString()
         val fullName = binding.textViewName.text.toString()
 
         // First, validate faculty and class synchronously
-        val isFacultyValid = isValidFaculty(faculty)
         val isClassValid = isValidClass(classRoom)
-
-        if (!isFacultyValid || !isClassValid) {
-            // Stop further validation if faculty or class is invalid
+        val isValidName = isValidName(fullName)
+        if (!isClassValid || !isValidName) {
             return
         }
 
         // Validate ID asynchronously
-        isValidID(id) { isIDValid ->
-            if (!isIDValid) {
-                return@isValidID
+        isValidEmail(email) { isEmailValid ->
+            if (!isEmailValid) {
+                return@isValidEmail
             }
 
-            // If ID is valid, proceed to validate email
-            isValidEmail(email) { isEmailValid ->
-                if (!isEmailValid) {
-                    return@isValidEmail
+            val student = Student(
+                email =  email,
+                faculty = faculty,
+                fullName =  fullName,
+                classRoom =  classRoom,
+                certificates = listCertificate)
+            if (existingStudent != null){
+                student.id = existingStudent!!.id
+                viewModel.updateStudent(student){
+                    val returnIntent = Intent()
+                    returnIntent.putExtra("student", student)
+                    setResult(Activity.RESULT_OK, returnIntent)
+                    finish()
                 }
-
-                val student = Student(
-                   id =  id,
-                    email =  email,
-                   faculty = faculty,
-                   fullName =  fullName,
-                    classRoom =  classRoom,
-                    certificates = listCertificate)
-                if (existingStudent != null){
-                    viewModel.updateStudent(student){
-                        val returnIntent = Intent()
-                        returnIntent.putExtra("student", student)
-                        setResult(Activity.RESULT_OK, returnIntent)
-                        finish()
-                    }
-                }else{
-                    viewModel.createStudent(student){
-                        finish()
-                    }
+            }else{
+                viewModel.createStudent(student,facultyCode){
+                    finish()
                 }
             }
         }
     }
 
-// Keep your existing validation functions as they are
 
-    fun isValidFaculty(faculty: String): Boolean{
-        if(faculty.isEmpty() || faculty.isBlank()){
-            binding.layoutFaculty.error = "Khoa không hợp lệ!"
-            return false
-        }else{
-            binding.layoutFaculty.error = null
-            return true
-        }
-    }
     fun isValidClass(classRom: String): Boolean{
         if(classRom.isEmpty() || classRom.isBlank()){
             binding.layoutClass.error = "Lớp không hợp lệ!"
@@ -136,27 +130,16 @@ class AddEditStudentActivity : AppCompatActivity() {
             return true
         }
     }
-    fun isValidID(id: String, onComplete: (Boolean) -> Unit) {
-        if (id.isEmpty()) {
-            binding.layoutID.error = "ID không hợp lệ!"
-            onComplete(false)
-        } else {
-            if (existingStudent != null && id == existingStudent!!.id) {
-                binding.layoutID.error = null
-                onComplete(true)
-            } else {
-                viewModel.isCodeUnique(id) { isSuccess ->
-                    if (!isSuccess) {
-                        binding.layoutID.error = "ID đã tồn tại!"
-                        onComplete(false)
-                    } else {
-                        binding.layoutID.error = null
-                        onComplete(true)
-                    }
-                }
-            }
+    fun isValidName(name: String): Boolean{
+        if(name.isEmpty() || name.isBlank()){
+            binding.layoutName.setText("Tên không hợp lệ!")
+            return false
+        }else{
+            binding.layoutName.setText(null)
+            return true
         }
     }
+
     fun isValidEmail(email: String, onComplete: (Boolean) -> Unit) {
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
 
@@ -185,7 +168,8 @@ class AddEditStudentActivity : AppCompatActivity() {
 
     private fun setupEditMode() {
         if (existingStudent!=null){
-            binding.editTextID.isEnabled = false
+            binding.autoCompleteTextViewOption.setText(existingStudent!!.faculty, false)
+            faculty = existingStudent!!.faculty
             binding.student = existingStudent
             listCertificate = existingStudent!!.certificates
             adapter.notifyDataSetChanged()
