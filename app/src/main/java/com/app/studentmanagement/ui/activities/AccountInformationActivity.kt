@@ -1,6 +1,7 @@
 package com.app.studentmanagement.ui.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -87,6 +88,30 @@ class AccountInformationActivity : AppCompatActivity() {
             resultLauncher.launch(intent)
         })
 
+        binding.buttonDelete.setOnClickListener(View.OnClickListener {
+            account?.let { it1 -> showDeleteConfirm(it1) }
+        })
+
+        //set progressbar
+        val progressDialog = createProgressDialog()
+        viewModel.loadingIndicator.observe(this){
+            if (it){
+                progressDialog.show()
+            }else{
+                progressDialog.dismiss()
+            }
+        }
+
+    }
+
+    private fun createProgressDialog(): AlertDialog {
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_progress,null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return  dialog
     }
     private fun setupData() {
         account?.let { account ->
@@ -130,6 +155,12 @@ class AccountInformationActivity : AppCompatActivity() {
         buttonConfirmDelete.setOnClickListener {
             viewModel.deleteAccount(account)
             dialog.dismiss()
+            viewModel.loadingIndicator.observe(this){
+                if (!it){
+                    finish()
+                }
+            }
+            finish()
         }
         buttonBack.setOnClickListener {
             dialog.dismiss()
