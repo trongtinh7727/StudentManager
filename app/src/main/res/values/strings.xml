@@ -22,7 +22,7 @@
         <item>Quản trị kinh doanh</item>
     </string-array>
 
-    <integer-array name="facultiesCode">
+    <string-array name="facultiesCode">
         <item>101</item>
         <item>102</item>
         <item>103</item>
@@ -37,7 +37,7 @@
         <item>112</item>
         <item>113</item>
         <item>114</item>
-    </integer-array>
+    </string-array>
 
 
     <string-array name="roles">

@@ -1,22 +1,19 @@
 package com.app.studentmanagement.viewmodels
 
 import android.content.ContentResolver
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Certificate
 import com.app.studentmanagement.data.models.Student
-import com.app.studentmanagement.data.repository.AccountRepository
 import com.app.studentmanagement.data.repository.StudentRepository
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 class StudentViewModel : ViewModel() {
     private val studentRepository = StudentRepository()
@@ -26,8 +23,8 @@ class StudentViewModel : ViewModel() {
         get() = _loadingIndicator
 
 
-    private val _students = MutableLiveData<List<Student>>()
-    val  students: LiveData<List<Student>>
+    private val _students = MutableLiveData<MutableList<Student>>()
+    val  students: LiveData<MutableList<Student>>
         get() = _students
 
     fun getAllStudent(){
@@ -61,7 +58,7 @@ class StudentViewModel : ViewModel() {
         }
     }
 
-    fun createStudent(student: Student,facultyCode:Int, onComplete: (Boolean)->Unit){
+    fun createStudent(student: Student,facultyCode:String, onComplete: (Boolean)->Unit){
         _loadingIndicator.value = true
         studentRepository.addStudent(student,facultyCode) {
             if(it){
@@ -97,7 +94,7 @@ class StudentViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun readCSVFile(uri: Uri, contentResolver: ContentResolver) {
+    fun readCSVFile(uri: Uri, contentResolver: ContentResolver, facultyMap:MutableMap<String,String>): MutableList<Student> {
         val inputStream = contentResolver.openInputStream(uri)
         val reader = BufferedReader(InputStreamReader(inputStream))
         val studentsList = mutableListOf<Student>() // Create a list to store students
@@ -108,48 +105,62 @@ class StudentViewModel : ViewModel() {
                 val tokens = line.split(",")
 
                 // Check if the line has enough tokens to create a Student object
-                if (tokens.size >=4) { // Assuming you need at least 4 columns in the CSV
-                    val id = tokens[0]
-                    val email = tokens[1]
-                    val fullName = tokens[2]
-                    val faculty = tokens[3]
-                    val classRoom = tokens[4]
+                if (tokens.size >=3) { // Assuming you need at least 4 columns in the CSV
+                    val email = tokens[0]
+                    val fullName = tokens[1]
+                    val facultyCode = tokens[2]
+                    val classRoom = tokens[3]
                     val certificates = mutableListOf<Certificate>()
 
-                    if (tokens.size >= 5){
-                        for (i in 5 until tokens.size step 2) {
+                    if (tokens.size >= 4){
+                        for (i in 4 until tokens.size step 2) {
                             val certificateCode = tokens[i]
                             val certificateName = tokens[i + 1]
                             val certificate = Certificate(code = certificateCode, name = certificateName)
                             certificates.add(certificate)
                         }
                     }
-                    val student = Student(
-                        id = id,
-                        email = email,
-                        fullName = fullName,
-                        faculty = faculty,
-                        classRoom = classRoom,
-                        certificates = certificates
-                    )
-                    studentsList.add(student)
+                    val student = facultyMap[facultyCode]?.let {
+                        Student(
+                            email = email,
+                            fullName = fullName,
+                            faculty= it,
+                            facultyCode = facultyCode,
+                            classRoom = classRoom,
+                            certificates = certificates
+                        )
+                    }
+                    if (student != null) {
+                        studentsList.add(student)
+                    }
                 }
                 line = reader.readLine()
             }
 
             reader.close()
-
-            for (student in studentsList) {
-                println("Student: ${student.fullName}, Email: ${student.email}")
-                for (certificate in student.certificates) {
-                    println("Certificate: ${certificate.name}, Code: ${certificate.code}")
-                }
-            }
+            return studentsList
         } catch (e: IOException) {
             e.printStackTrace()
+            return mutableListOf()
         }
     }
 
+    fun addListStudent(listStudent: MutableList<Student>, onComplete: (Boolean) -> Unit) {
+        val studentCount = listStudent.size
+        var successCount = 0
+        _loadingIndicator.value = true
+        for (student in listStudent) {
+            studentRepository.addStudent(student, student.facultyCode) { isSuccess ->
+                if (isSuccess) {
+                    successCount++
+                }
+                if (successCount == studentCount) {
+                    onComplete(successCount == studentCount)
+                    _loadingIndicator.postValue(false)
+                }
+            }
+        }
+    }
 
 
 }

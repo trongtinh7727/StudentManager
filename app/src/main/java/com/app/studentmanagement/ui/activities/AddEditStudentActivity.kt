@@ -26,8 +26,9 @@ class AddEditStudentActivity : AppCompatActivity() {
     private var listCertificate: MutableList<Certificate> = ArrayList()
     val adapter = CertificateAdapter()
     private var existingStudent: Student? = null
+    private var importMode: String? = null
     var faculty : String = ""
-    var facultyCode : Int = 0
+    var facultyCode : String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_edit_student)
@@ -38,6 +39,7 @@ class AddEditStudentActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
 
         existingStudent = intent.getSerializableExtra("student") as Student?
+        importMode = intent.getSerializableExtra("importMode") as String?
        if(existingStudent!= null) {
             setupEditMode()
         } else {
@@ -68,7 +70,7 @@ class AddEditStudentActivity : AppCompatActivity() {
         })
 
         val faculties = resources.getStringArray(R.array.faculties)
-        val facultiesCode = resources.getIntArray(R.array.facultiesCode)
+        val facultiesCode = resources.getStringArray(R.array.facultiesCode)
 
         val adapterInputRole = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, faculties)
         val autoCompleteTextView = binding.autoCompleteTextViewOption
@@ -79,7 +81,6 @@ class AddEditStudentActivity : AppCompatActivity() {
         }
     }
     fun saveStudent() {
-        val id = binding.textViewID.text.toString()
         val email = binding.editTextEmail.text.toString()
         val faculty = faculty
         val classRoom = binding.editTextClass.text.toString()
@@ -104,7 +105,19 @@ class AddEditStudentActivity : AppCompatActivity() {
                 fullName =  fullName,
                 classRoom =  classRoom,
                 certificates = listCertificate)
-            if (existingStudent != null){
+            if (importMode != null){
+                val facultyCodeMap = resources.getStringArray(R.array.faculties)
+                    .zip(resources.getStringArray(R.array.facultiesCode))
+                    .toMap()
+
+                val facultyCode = facultyCodeMap[student.faculty] ?: ""
+                student.facultyCode = facultyCode
+                student.id = existingStudent!!.id
+                val returnIntent = Intent()
+                returnIntent.putExtra("student", student)
+                setResult(Activity.RESULT_OK, returnIntent)
+                finish()
+            }else if (existingStudent != null){
                 student.id = existingStudent!!.id
                 viewModel.updateStudent(student){
                     val returnIntent = Intent()

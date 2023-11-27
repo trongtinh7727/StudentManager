@@ -25,7 +25,7 @@ class ExampleInstrumentedTest {
 
     // Get the faculties and facultiesCode arrays from resources
     val faculties = appContext.resources.getStringArray(R.array.faculties)
-    val facultiesCode = appContext.resources.getIntArray(R.array.facultiesCode)
+    val facultiesCode = appContext.resources.getStringArray(R.array.facultiesCode)
     @Test
     fun useAppContext() {
         // Context of the app under test.

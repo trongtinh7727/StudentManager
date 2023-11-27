@@ -10,6 +10,7 @@ data class Student @RequiresApi(Build.VERSION_CODES.O) constructor(
     val email: String = "",
     val fullName: String = "",
     val faculty: String ="",
+    var facultyCode: String ="",
     val classRoom: String ="",
     val createTime: Long = LocalDateTime.now().toEpochSecond(ZoneOffset.of("+7")),
     var updateTime: Long = LocalDateTime.now().toEpochSecond(ZoneOffset.of("+7")),

@@ -10,8 +10,8 @@ class StudentRepository {
     private val db = FirebaseFirestore.getInstance()
     private val studentCollection = db.collection("students")
 
-    fun addStudent(student: Student, facultyCode: Int, onComplete: (Boolean) -> Unit) {
-        val countDocRef = db.collection("facultyCounts").document(facultyCode.toString())
+    fun addStudent(student: Student, facultyCode: String, onComplete: (Boolean) -> Unit) {
+        val countDocRef = db.collection("facultyCounts").document(facultyCode)
 
         // Transaction to retrieve and increment the count
         db.runTransaction { transaction ->
@@ -58,11 +58,11 @@ class StudentRepository {
             .addOnFailureListener { onComplete(false) }
     }
 
-    fun getAllStudents(onComplete: (List<Student>) -> Unit) {
+    fun getAllStudents(onComplete: (MutableList<Student>) -> Unit) {
 
         val registration = studentCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             if (firebaseFirestoreException != null) {
-                onComplete(emptyList())
+                onComplete(mutableListOf())
                 return@addSnapshotListener
             }
 
@@ -74,7 +74,7 @@ class StudentRepository {
                 }
                 onComplete(students)
             } else {
-                onComplete(emptyList())
+                onComplete(mutableListOf())
             }
         }
     }
@@ -99,12 +99,12 @@ class StudentRepository {
             }
     }
 
-    fun searchStudents(name: String, studentId: String, classRoom: String, onComplete: (List<Student>) -> Unit) {
+    fun searchStudents(name: String, studentId: String, classRoom: String, onComplete: (MutableList<Student>) -> Unit) {
         val query: Query = studentCollection
 
         query.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             if (firebaseFirestoreException != null) {
-                onComplete(emptyList())
+                onComplete(mutableListOf())
                 return@addSnapshotListener
             }
 
@@ -117,9 +117,9 @@ class StudentRepository {
                             (studentId.isBlank() || student.id.contains(studentId, ignoreCase = true)) &&
                             (classRoom.isBlank() || student.classRoom.contains(classRoom, ignoreCase = true))
                 }
-                onComplete(students)
+                onComplete(students as MutableList<Student>)
             } else {
-                onComplete(emptyList())
+                onComplete(mutableListOf())
             }
         }
     }

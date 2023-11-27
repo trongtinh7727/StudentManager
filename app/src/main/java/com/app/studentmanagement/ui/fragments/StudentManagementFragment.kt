@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -19,9 +18,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.studentmanagement.R
 import com.app.studentmanagement.adapters.StudentAdapter
 import com.app.studentmanagement.databinding.FragmentStudentManagementBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
+import com.app.studentmanagement.ui.activities.ImportFileActivity
 import com.app.studentmanagement.viewmodels.StudentViewModel
 
 
@@ -40,18 +41,32 @@ class StudentManagementFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentStudentManagementBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
-        val adapter = StudentAdapter(requireContext(),viewModel)
+        val adapter = StudentAdapter(requireContext(),viewModel,null)
 
         viewModel.getAllStudent()
         viewModel.students.observe(this){
             listStudents->
             adapter.updateList(listStudents)
         }
+
+        val facultyCodeArray = resources.getStringArray(R.array.facultiesCode)
+        val facultyNameArray = resources.getStringArray(R.array.faculties)
+
+        val facultyMap = mutableMapOf<String, String>()
+
+        for (i in facultyCodeArray.indices) {
+            val code = facultyCodeArray[i]
+            val name = facultyNameArray.getOrNull(i) ?: ""
+            facultyMap[code] = name
+        }
         csvFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
                 data?.data?.let { uri ->
-                    viewModel.readCSVFile(uri, requireActivity().contentResolver)
+                    val listStudent =   viewModel.readCSVFile(uri, requireActivity().contentResolver,facultyMap)
+                    val intent = Intent(requireContext(), ImportFileActivity::class.java)
+                    intent.putExtra("listStudent",ArrayList(listStudent))
+                    startActivity(intent)
                 }
             }
         }
@@ -70,6 +85,7 @@ class StudentManagementFragment : Fragment() {
             val classroom = binding.editTextClass.text.toString()
             viewModel.search(name,id,classroom)
         })
+
         binding.buttonImport.setOnClickListener(View.OnClickListener {
             if (checkPermissions()) {
                 openCsvFilePicker()

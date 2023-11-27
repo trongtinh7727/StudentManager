@@ -5,28 +5,26 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.studentmanagement.R
+import com.app.studentmanagement.data.StudentAdapterListener
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.ItemRowStudentBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
 import com.app.studentmanagement.ui.activities.DetailStudentInformationActivity
 import com.app.studentmanagement.viewmodels.StudentViewModel
 
-class StudentAdapter(    private  var context : Context, private val viewModel: StudentViewModel
+class StudentAdapter(private  var context : Context, private val viewModel: StudentViewModel, private val listener: StudentAdapterListener?
 ) : RecyclerView.Adapter<StudentAdapter.ViewHolder>()  {
 
 
 
-    private var items: List<Student> = emptyList()
-    fun updateList(newItems: List<Student>) {
+    private var items: MutableList<Student> = mutableListOf()
+    fun updateList(newItems: MutableList<Student>) {
         items = newItems
         notifyDataSetChanged()
     }
@@ -40,9 +38,21 @@ class StudentAdapter(    private  var context : Context, private val viewModel: 
         return ViewHolder(binding)
     }
 
+    fun getListItems():MutableList<Student>{
+        return items
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
+        holder.buttonDelete.setOnClickListener(View.OnClickListener {
+            if (listener!= null){
+                items.removeAt(position)
+                notifyDataSetChanged()
+            }else{
+                showDeleteConfirm(item)
+            }
+        })
     }
 
     override fun getItemCount(): Int {
@@ -51,22 +61,25 @@ class StudentAdapter(    private  var context : Context, private val viewModel: 
 
    inner class ViewHolder(private val binding: ItemRowStudentBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        val  buttonDelete = binding.buttonDelete
         fun bind(item: Student) {
             binding.student = item
             binding.buttonEdit.setOnClickListener {
-                val intent = Intent(context, AddEditStudentActivity::class.java)
-                intent.putExtra("student",item)
-                context.startActivity(intent)
-            }
-            binding.buttonDelete.setOnClickListener {
-                showDeleteConfirm(item)
+                if (listener!= null){
+                    listener.onEditStudent(item,adapterPosition)
+                }else{
+                    val intent = Intent(context, AddEditStudentActivity::class.java)
+                    intent.putExtra("student",item)
+                    context.startActivity(intent)
+                }
             }
 
             itemView.setOnClickListener {
-                val intent = Intent(context, DetailStudentInformationActivity::class.java)
-                intent.putExtra("student",item)
-                context.startActivity(intent)
+                if (listener== null){
+                    val intent = Intent(context, DetailStudentInformationActivity::class.java)
+                    intent.putExtra("student",item)
+                    context.startActivity(intent)
+                }
             }
 
         }
