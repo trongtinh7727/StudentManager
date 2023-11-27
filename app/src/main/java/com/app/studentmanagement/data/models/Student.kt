@@ -13,5 +13,5 @@ data class Student @RequiresApi(Build.VERSION_CODES.O) constructor(
     val classRoom: String ="",
     val createTime: Long = LocalDateTime.now().toEpochSecond(ZoneOffset.of("+7")),
     var updateTime: Long = LocalDateTime.now().toEpochSecond(ZoneOffset.of("+7")),
-    val certificates: List<Certificate> = emptyList()
-)
+    val certificates: MutableList<Certificate> = mutableListOf()
+):java.io.Serializable

@@ -1,10 +1,13 @@
 package com.app.studentmanagement
 
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Role
+import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.data.repository.AccountRepository
+import com.app.studentmanagement.data.repository.StudentRepository
 import com.google.firebase.auth.FirebaseAuth
 
 import org.junit.Test
@@ -15,6 +18,7 @@ import org.junit.Assert.*
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     val accountRepository = AccountRepository()
+    val studentRepository = StudentRepository()
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -67,6 +71,15 @@ class ExampleInstrumentedTest {
             "Dunc Kinig"
         )
         return names[i]
+    }
+    fun generateRandomFaculty(): String {
+        val names = listOf(
+            "Công nghệ thông tin",
+            "Điện - điện tử",
+            "Mỹ thuật công nghiệp",
+            "Dược"
+        )
+        return names.random()
     }
 
     // Function to generate a random role
@@ -127,4 +140,30 @@ class ExampleInstrumentedTest {
         assert(createdAccounts.all { it })
     }
 
+    @Test
+    fun createStudet(){
+        val accountsToCreate = 29
+
+        // Create 20 accounts
+        for (i in 1..accountsToCreate) {
+            val emailValue = "student$i@app.com"
+            val randomName = generateRandomName(i)
+            val faculty = generateRandomFaculty()
+
+
+            val student = Student(
+                id = "SV-$i",
+                email = emailValue,
+                fullName = randomName,
+                classRoom = "21050$i",
+                faculty = faculty
+            )
+
+            studentRepository.addStudent(student){
+                Log.i("Test", "createStudet: ${student.fullName}")
+            }
+            Thread.sleep(1000)
+        }
+
+    }
 }

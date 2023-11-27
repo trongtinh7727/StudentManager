@@ -18,9 +18,11 @@ import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.ItemRowStudentBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
 import com.app.studentmanagement.ui.activities.DetailStudentInformationActivity
+import com.app.studentmanagement.viewmodels.StudentViewModel
 
-class StudentAdapter(    private  var context : Context
+class StudentAdapter(    private  var context : Context, private val viewModel: StudentViewModel
 ) : RecyclerView.Adapter<StudentAdapter.ViewHolder>()  {
+
 
 
     private var items: List<Student> = emptyList()
@@ -52,25 +54,27 @@ class StudentAdapter(    private  var context : Context
 
         fun bind(item: Student) {
             binding.student = item
-
-
             binding.buttonEdit.setOnClickListener {
                 val intent = Intent(context, AddEditStudentActivity::class.java)
+                intent.putExtra("student",item)
                 context.startActivity(intent)
             }
             binding.buttonDelete.setOnClickListener {
-                showDeleteConfirm()
+                showDeleteConfirm(item)
             }
 
             itemView.setOnClickListener {
                 val intent = Intent(context, DetailStudentInformationActivity::class.java)
+                intent.putExtra("student",item)
                 context.startActivity(intent)
             }
 
         }
     }
 
-    private fun showDeleteConfirm(){
+
+
+    private fun showDeleteConfirm(student: Student){
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -92,7 +96,9 @@ class StudentAdapter(    private  var context : Context
         val buttonBack = dialog.findViewById<TextView>(R.id.buttonBack)
 
         buttonConfirmDelete.setOnClickListener {
-
+            viewModel.deleteStudent(student.id){
+            }
+            dialog.dismiss()
         }
         buttonBack.setOnClickListener {
             dialog.dismiss()

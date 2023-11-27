@@ -1,6 +1,6 @@
 package com.app.studentmanagement.data.models
 
 data class Certificate(
-    val code: String,
-    val name: String
-)
+    var code: String = "",
+    var name: String = ""
+):java.io.Serializable

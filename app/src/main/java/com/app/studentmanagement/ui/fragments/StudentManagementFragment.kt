@@ -27,12 +27,13 @@ class StudentManagementFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentStudentManagementBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
+        val adapter = StudentAdapter(requireContext(),viewModel)
 
-
-        // set viewModel,Adapter and fill recycleView
-        val accounts = viewModel.generateStudents(30) // You should implement your data generation logic
-        val adapter = StudentAdapter(requireContext())
-        adapter.updateList(accounts)
+        viewModel.getAllStudent()
+        viewModel.students.observe(this){
+            listStudents->
+            adapter.updateList(listStudents)
+        }
 
         binding.recycleViewListStudent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recycleViewListStudent.adapter = adapter
@@ -42,8 +43,6 @@ class StudentManagementFragment : Fragment() {
             startActivity(intent)
         }
 
-
-        // set button add new Student
 
         return binding.root
     }

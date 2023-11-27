@@ -1,5 +1,6 @@
 package com.app.studentmanagement.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,13 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.app.studentmanagement.R
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.databinding.FragmentPersonalBinding
+import com.app.studentmanagement.ui.activities.AddEditAccountActivity
 import com.app.studentmanagement.viewmodels.AccountViewModel
 
 class PersonalFragment : Fragment() {
 
     private lateinit var viewModel: AccountViewModel
     private lateinit var binding: FragmentPersonalBinding
-
+    private var account: Account? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,10 +28,15 @@ class PersonalFragment : Fragment() {
 
         viewModel.setCurrentUser()
         viewModel.currentUser.observe(this){
-            account ->
-            setupData(account)
+            it ->
+            account = it
+            setupData(it)
         }
-
+        binding.buttonEdit.setOnClickListener(View.OnClickListener {
+            val intent = Intent(requireContext(), AddEditAccountActivity::class.java)
+            intent.putExtra("account",account)
+            startActivity(intent)
+        })
         return binding.root
     }
 

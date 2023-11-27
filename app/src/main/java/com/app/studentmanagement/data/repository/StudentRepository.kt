@@ -1,5 +1,6 @@
 package com.app.studentmanagement.data.repository
 
+import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Student
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -41,12 +42,44 @@ class StudentRepository {
     }
 
     fun getAllStudents(onComplete: (List<Student>) -> Unit) {
-        studentCollection.get()
-            .addOnSuccessListener { result ->
-                val students = result.mapNotNull { it.toObject<Student>() }
-                onComplete(students)
+
+        val registration = studentCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            if (firebaseFirestoreException != null) {
+                onComplete(emptyList())
+                return@addSnapshotListener
             }
-            .addOnFailureListener { onComplete(emptyList()) }
+
+            if (querySnapshot != null) {
+                val students = mutableListOf<Student>()
+                for (document in querySnapshot) {
+                    val student = document.toObject(Student::class.java)
+                    students.add(student)
+                }
+                onComplete(students)
+            } else {
+                onComplete(emptyList())
+            }
+        }
+    }
+
+    fun isEmailUnique(email: String, onComplete: (Boolean) -> Unit) {
+        studentCollection.whereEqualTo("email", email).limit(1).get()
+            .addOnSuccessListener { documents ->
+                onComplete(documents.isEmpty) // If no documents, the email is unique
+            }
+            .addOnFailureListener {
+                onComplete(false) // Handle failure
+            }
+    }
+
+    fun isCodelUnique(code: String, onComplete: (Boolean) -> Unit) {
+        studentCollection.whereEqualTo("id", code).limit(1).get()
+            .addOnSuccessListener { documents ->
+                onComplete(documents.isEmpty) // If no documents, the email is unique
+            }
+            .addOnFailureListener {
+                onComplete(false) // Handle failure
+            }
     }
 
     fun searchStudents(name: String, studentId: String, classRoom: String, onComplete: (List<Student>) -> Unit) {
@@ -61,12 +94,22 @@ class StudentRepository {
         if (classRoom.isNotBlank()) {
             query = query.whereEqualTo("classRoom", classRoom)
         }
-
-        query.get()
-            .addOnSuccessListener { result ->
-                val students = result.mapNotNull { it.toObject<Student>() }
-                onComplete(students)
+        val registration = query.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            if (firebaseFirestoreException != null) {
+                onComplete(emptyList())
+                return@addSnapshotListener
             }
-            .addOnFailureListener { onComplete(emptyList()) }
+
+            if (querySnapshot != null) {
+                val students = mutableListOf<Student>()
+                for (document in querySnapshot) {
+                    val student = document.toObject(Student::class.java)
+                    students.add(student)
+                }
+                onComplete(students)
+            } else {
+                onComplete(emptyList())
+            }
+        }
     }
 }

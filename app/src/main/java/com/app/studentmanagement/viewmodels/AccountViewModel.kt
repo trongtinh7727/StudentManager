@@ -12,8 +12,6 @@ import com.google.firebase.auth.FirebaseAuth
 class AccountViewModel : ViewModel() {
     private val  accountRepository = AccountRepository()
 
-
-
     private val _loadingIndicator = MutableLiveData<Boolean>()
     val loadingIndicator: LiveData<Boolean>
         get() = _loadingIndicator
