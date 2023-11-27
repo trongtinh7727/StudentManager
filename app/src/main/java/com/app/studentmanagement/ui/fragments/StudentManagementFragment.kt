@@ -43,6 +43,12 @@ class StudentManagementFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.buttonSearch.setOnClickListener(View.OnClickListener {
+            val name = binding.editTextName.text.toString()
+            val id = binding.editTextID.text.toString()
+            val classroom = binding.editTextClass.text.toString()
+            viewModel.search(name,id,classroom)
+        })
 
         return binding.root
     }

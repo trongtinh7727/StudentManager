@@ -83,28 +83,22 @@ class StudentRepository {
     }
 
     fun searchStudents(name: String, studentId: String, classRoom: String, onComplete: (List<Student>) -> Unit) {
-        var query: Query = studentCollection
+        val query: Query = studentCollection
 
-        if (name.isNotBlank()) {
-            query = query.whereEqualTo("name", name)
-        }
-        if (studentId.isNotBlank()) {
-            query = query.whereEqualTo("id", studentId)
-        }
-        if (classRoom.isNotBlank()) {
-            query = query.whereEqualTo("classRoom", classRoom)
-        }
-        val registration = query.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+        query.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             if (firebaseFirestoreException != null) {
                 onComplete(emptyList())
                 return@addSnapshotListener
             }
 
             if (querySnapshot != null) {
-                val students = mutableListOf<Student>()
-                for (document in querySnapshot) {
-                    val student = document.toObject(Student::class.java)
-                    students.add(student)
+                val students = querySnapshot.documents.mapNotNull { document ->
+                    document.toObject(Student::class.java)
+                }.filter { student ->
+                    // Apply client-side filters
+                    (name.isBlank() || student.fullName.contains(name, ignoreCase = true)) &&
+                            (studentId.isBlank() || student.id.contains(studentId, ignoreCase = true)) &&
+                            (classRoom.isBlank() || student.classRoom.contains(classRoom, ignoreCase = true))
                 }
                 onComplete(students)
             } else {
@@ -112,4 +106,5 @@ class StudentRepository {
             }
         }
     }
+
 }
