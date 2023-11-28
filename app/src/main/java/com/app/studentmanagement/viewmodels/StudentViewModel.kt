@@ -11,9 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.app.studentmanagement.data.models.Certificate
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.data.repository.StudentRepository
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
+import java.io.*
 
 class StudentViewModel : ViewModel() {
     private val studentRepository = StudentRepository()
@@ -58,9 +56,9 @@ class StudentViewModel : ViewModel() {
         }
     }
 
-    fun createStudent(student: Student,facultyCode:String, onComplete: (Boolean)->Unit){
+    fun createStudent(student: Student, onComplete: (Boolean)->Unit){
         _loadingIndicator.value = true
-        studentRepository.addStudent(student,facultyCode) {
+        studentRepository.addStudent(student) {
             if(it){
                 onComplete(true)
             }else{
@@ -93,6 +91,75 @@ class StudentViewModel : ViewModel() {
         }
     }
 
+    fun exportCSVFile(uri: Uri, contentResolver: ContentResolver, studentsList: List<Student>): Boolean {
+        try {
+            val outputStream = contentResolver.openOutputStream(uri)
+            val writer = BufferedWriter(OutputStreamWriter(outputStream))
+
+            for (student in studentsList) {
+                val studentData = StringBuilder()
+                studentData.append("${student.email},${student.fullName},${student.facultyCode},${student.classRoom}")
+
+                for (certificate in student.certificates) {
+                    studentData.append(",${certificate.code},${certificate.name}")
+                }
+
+                writer.write(studentData.toString())
+                writer.newLine()
+            }
+
+            writer.close()
+            return true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
+    fun exportCertificatesCSVFile(uri: Uri, contentResolver: ContentResolver, certificates: List<Certificate>): Boolean {
+        try {
+            val outputStream = contentResolver.openOutputStream(uri)
+            val writer = BufferedWriter(OutputStreamWriter(outputStream))
+            for (certificate in certificates) {
+                val studentData = StringBuilder()
+                studentData.append("${certificate.code},${certificate.name}")
+                writer.write(studentData.toString())
+                writer.newLine()
+            }
+            writer.close()
+            return true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
+    fun readCertificatesCSVFile(uri: Uri, contentResolver: ContentResolver):MutableList<Certificate>{
+        val inputStream = contentResolver.openInputStream(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val certificates = mutableListOf<Certificate>()
+
+        try {
+            var line: String? = reader.readLine()
+            while (line != null) {
+                val tokens = line.split(",")
+                if (tokens.size >=2) {
+                    val certificateCode = tokens[0]
+                    val certificateName = tokens[1]
+                    val certificate = Certificate(code = certificateCode, name = certificateName)
+                    certificates.add(certificate)
+
+                }
+                line = reader.readLine()
+            }
+
+            reader.close()
+            return certificates
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return mutableListOf()
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     fun readCSVFile(uri: Uri, contentResolver: ContentResolver, facultyMap:MutableMap<String,String>): MutableList<Student> {
         val inputStream = contentResolver.openInputStream(uri)
@@ -150,7 +217,7 @@ class StudentViewModel : ViewModel() {
         var successCount = 0
         _loadingIndicator.value = true
         for (student in listStudent) {
-            studentRepository.addStudent(student, student.facultyCode) { isSuccess ->
+            studentRepository.addStudent(student) { isSuccess ->
                 if (isSuccess) {
                     successCount++
                 }

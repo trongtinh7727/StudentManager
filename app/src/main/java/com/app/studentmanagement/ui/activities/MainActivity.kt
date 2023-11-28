@@ -1,5 +1,6 @@
 package com.app.studentmanagement.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,18 +10,22 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.app.studentmanagement.R
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.databinding.ActivityMainBinding
 import com.app.studentmanagement.ui.fragments.AccountManagementFragment
 import com.app.studentmanagement.ui.fragments.PersonalFragment
 import com.app.studentmanagement.ui.fragments.StudentManagementFragment
 import com.app.studentmanagement.viewmodels.AccountViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.imageview.ShapeableImageView
 
 
 class MainActivity : AppCompatActivity() {
@@ -53,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         var buttonStudent  = headerView.findViewById<Button>(R.id.buttonManagementStudent)
 
 
-        replaceFragment(AccountManagementFragment())
+        replaceFragment(StudentManagementFragment())
         buttonAcc.setOnClickListener {
             replaceFragment(AccountManagementFragment())
             binding.drawableLayout.closeDrawer(GravityCompat.START)
@@ -63,10 +68,13 @@ class MainActivity : AppCompatActivity() {
             binding.drawableLayout.closeDrawer(GravityCompat.START)
         }
 
-        var buttonLogin  = headerView.findViewById<Button>(R.id.buttonLogin)
-        buttonLogin.setOnClickListener {
-            var intent = Intent(this,LoginActivity::class.java)
-            startActivity(intent)
+        var buttonLogout  = headerView.findViewById<Button>(R.id.buttonLogout)
+        buttonLogout.setOnClickListener {
+            viewModel.logout {
+                var intent = Intent(this,LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
 
@@ -77,7 +85,11 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(PersonalFragment())
             binding.drawableLayout.closeDrawer(GravityCompat.START)
         }
-
+        var avatar = headerView.findViewById<ShapeableImageView>(R.id.imageAvatarHeader)
+        avatar.setOnClickListener{
+            replaceFragment(PersonalFragment())
+            binding.drawableLayout.closeDrawer(GravityCompat.START)
+        }
 
         //binding data
         viewModel.setCurrentUser()
@@ -86,8 +98,14 @@ class MainActivity : AppCompatActivity() {
             val textViewName = headerView.findViewById<TextView>(R.id.textViewName)
             val textViewID = headerView.findViewById<TextView>(R.id.textViewID)
             val textViewEmail = headerView.findViewById<TextView>(R.id.textViewEmail)
-            val imageAvatar = headerView.findViewById<ImageButton>(R.id.imageAvatar)
+            val imageAvatar = headerView.findViewById<ShapeableImageView>(R.id.imageAvatarHeader)
 
+            val cardViewManagerAccount = headerView.findViewById<CardView>(R.id.cardViewManagementAccount)
+            if (account.role == Role.Admin){
+                cardViewManagerAccount.visibility = View.VISIBLE
+            }else{
+                cardViewManagerAccount.visibility = View.GONE
+            }
             textViewName.setText(account.name)
             textViewID.setText("MS: "+account.id)
             textViewEmail.setText("Email: "+account.email)
@@ -97,21 +115,26 @@ class MainActivity : AppCompatActivity() {
                 .into(imageAvatar)
 
         }
+
+
     }
      fun replaceFragment(fragment : Fragment ): Boolean {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout_main , fragment)
-        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
         return true
     }
     override fun onBackPressed() {
-        val fragmentManager = supportFragmentManager
-        if (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
-        }
+        AlertDialog.Builder(this)
+            .setMessage("Are you sure you want to exit?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                super.onBackPressed() // Gọi phương thức cha trước khi thoát ứng dụng
+                finishAffinity()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
+
 }

@@ -2,7 +2,9 @@ package com.app.studentmanagement.data.repository
 
 import android.util.Log
 import com.app.studentmanagement.data.models.Account
+import com.app.studentmanagement.data.models.LoginHistory
 import com.app.studentmanagement.data.models.Role
+import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.services.DeleteUserRequest
 import com.app.studentmanagement.services.UpdateUserRequest
 import com.app.studentmanagement.services.UserService
@@ -159,4 +161,44 @@ class AccountRepository {
 
     }
 
+    fun updateAvatar(userID: String, avatarUrl: String, onComplete: (Boolean) -> Unit) {
+        val userRef = accountCollection.document(userID)
+        userRef.update("avatarUrl",avatarUrl)
+            .addOnSuccessListener {
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false)
+            }
+    }
+
+    fun addLoginHistory(userID: String, loginHistory: LoginHistory, onComplete: (Boolean) -> Unit) {
+        val userRef = accountCollection.document(userID).collection("loginHistory")
+        userRef.add(loginHistory)
+            .addOnSuccessListener {
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false)
+            }
+    }
+    fun getLoginHistoryByID(userID: String,onComplete: (MutableList<LoginHistory>) -> Unit) {
+       val loginCollection = accountCollection.document(userID).collection("loginHistory")
+        val registration = loginCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            if (firebaseFirestoreException != null) {
+                onComplete(mutableListOf())
+                return@addSnapshotListener
+            }
+            if (querySnapshot != null) {
+                val loginHistories = mutableListOf<LoginHistory>()
+                for (document in querySnapshot) {
+                    val loginHistory = document.toObject(LoginHistory::class.java)
+                    loginHistories.add(loginHistory)
+                }
+                onComplete(loginHistories)
+            } else {
+                onComplete(mutableListOf())
+            }
+        }
+    }
 }

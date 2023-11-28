@@ -48,27 +48,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp">
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginTop="0dp"
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/imageAvatar"
+                                android:layout_width="85dp"
+                                android:layout_height="85dp"
+                                android:layout_centerInParent="true"
+                                android:scaleType="centerCrop"
+                                app:shapeAppearance="@style/avatarBoder"
                                 android:src="@drawable/avt" />
 
-                            <ImageButton
-                                android:id="@+id/buttonUploadAvt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginStart="44dp"
-                                android:layout_marginTop="70dp"
-                                android:layout_marginEnd="-30dp"
-                                android:background="@null"
-                                android:src="@drawable/ic_upload_avt" />
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -110,12 +98,14 @@
                             android:id="@+id/textViewName"
                             android:gravity="center"
                             android:layout_gravity="center"
-                            android:inputType="text"
+                            android:inputType="none"
+                            android:enabled="false"
                             android:hint="Họ và tên"
                             android:background="@color/white"
                             android:text="@{student.fullName}"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
+                            android:textColor="@color/black"
                             android:textStyle="bold"
                             android:textSize="20dp"/>
 
@@ -221,7 +211,7 @@
                                 android:layout_gravity="center"
                                 android:layout_height="wrap_content">
                                 <ImageButton
-                                    android:id="@+id/buttonImportFile"
+                                    android:id="@+id/buttonExportFile"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_upload"
                                     android:layout_weight="1"

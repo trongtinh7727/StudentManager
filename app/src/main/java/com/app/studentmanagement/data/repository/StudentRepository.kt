@@ -10,8 +10,8 @@ class StudentRepository {
     private val db = FirebaseFirestore.getInstance()
     private val studentCollection = db.collection("students")
 
-    fun addStudent(student: Student, facultyCode: String, onComplete: (Boolean) -> Unit) {
-        val countDocRef = db.collection("facultyCounts").document(facultyCode)
+    fun addStudent(student: Student, onComplete: (Boolean) -> Unit) {
+        val countDocRef = db.collection("facultyCounts").document(student.facultyCode)
 
         // Transaction to retrieve and increment the count
         db.runTransaction { transaction ->
@@ -23,7 +23,7 @@ class StudentRepository {
             newCount
         }.addOnSuccessListener { newCount ->
             // Create a new student ID using the faculty code and new count
-            val studentId = "${facultyCode}$newCount"
+            val studentId = "${student.facultyCode}$newCount"
             student.id = studentId
 
             studentCollection.document(studentId).set(student)

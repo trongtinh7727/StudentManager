@@ -23,19 +23,25 @@ import com.app.studentmanagement.adapters.CertificateAdapter
 import com.app.studentmanagement.adapters.StudentAdapter
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Certificate
+import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.ActivityAddEditAccountBinding
 import com.app.studentmanagement.databinding.ActivityAddEditStudentBinding
 import com.app.studentmanagement.databinding.ActivityDetailStudentInformationBinding
+import com.app.studentmanagement.viewmodels.AccountViewModel
 import com.app.studentmanagement.viewmodels.StudentViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class DetailStudentInformationActivity : AppCompatActivity() {
 
+    private lateinit var accountViewModel: AccountViewModel
     private lateinit var viewModel: StudentViewModel
     private lateinit var binding: ActivityDetailStudentInformationBinding
     private var listCertificate: MutableList<Certificate> = ArrayList()
     val adapter = CertificateAdapter()
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var createFileLauncher: ActivityResultLauncher<Intent>
     private var existingStudent: Student? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +49,15 @@ class DetailStudentInformationActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back);
+
+        accountViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
+        accountViewModel.setCurrentUser()
+        accountViewModel.currentUser.observe(this){
+            if (it.role == Role.Employee){
+                binding.buttonEdit.visibility = View.GONE
+                binding.buttonDelete.visibility = View.GONE
+            }
+        }
 
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
         existingStudent = intent.getSerializableExtra("student") as Student?
@@ -91,6 +106,24 @@ class DetailStudentInformationActivity : AppCompatActivity() {
                 progressDialog.dismiss()
             }
         }
+        createFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    existingStudent?.let { viewModel.exportCertificatesCSVFile(uri, contentResolver, it.certificates) }
+                }
+            }
+        }
+
+        binding.buttonExportFile.setOnClickListener(View.OnClickListener {
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                val currentDateTime = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(
+                    LocalDateTime.now())
+                putExtra(Intent.EXTRA_TITLE, "cert_$currentDateTime.csv")
+            }
+            createFileLauncher.launch(intent)
+        })
     }
     private fun showDeleteConfirm(student: Student){
         val dialog = Dialog(this)

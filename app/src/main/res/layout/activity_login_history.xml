@@ -26,6 +26,10 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:layout_height="1dp"
             android:background="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="@+id/toolbar" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_marginBottom="50dp"
+            android:layout_height="match_parent">
         <androidx.cardview.widget.CardView
             android:layout_margin="20dp"
             app:cardCornerRadius="10dp"
@@ -54,18 +58,19 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/textViewTime"
-                            android:text="ID"
+                            android:text="Thời gian"
                             android:gravity="center"
-                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.5"
                             android:layout_height="wrap_content"
-                            android:layout_width="wrap_content" />
+                            android:layout_width="0dp" />
                         <TextView
                             android:id="@+id/textViewName"
-                            android:text="Name"
+                            android:text="Thiết bị"
                             android:gravity="center"
-                            android:layout_weight="1"
+                            android:layout_weight="0.5"
                             android:layout_height="wrap_content"
-                            android:layout_width="wrap_content" />
+                            android:layout_width="0dp" />
                     </TableRow>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycleViewListHistoryLogin"
@@ -74,6 +79,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 </TableLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

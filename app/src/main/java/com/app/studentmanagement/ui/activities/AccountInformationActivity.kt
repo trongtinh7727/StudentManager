@@ -69,6 +69,7 @@ class AccountInformationActivity : AppCompatActivity() {
 
         binding.buttonShowHistory.setOnClickListener{
             val intent = Intent(this, LoginHistoryActivity::class.java)
+            intent.putExtra("account",account)
             startActivity(intent)
         }
 
@@ -155,7 +156,7 @@ class AccountInformationActivity : AppCompatActivity() {
         val buttonBack = dialog.findViewById<TextView>(R.id.buttonBack)
 
         buttonConfirmDelete.setOnClickListener {
-            viewModel.deleteAccount(account)
+            viewModel.deleteAccount(account, this)
             dialog.dismiss()
             viewModel.loadingIndicator.observe(this){
                 if (!it){

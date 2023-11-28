@@ -32,7 +32,7 @@ class AccountManagementFragment : Fragment() {
     ): View? {
         binding = FragmentAccountManagementBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
-        val progressDialog = createProgressDialog()
+
 
         viewModel.getAccounts(Role.All)
         // set viewModel,Adapter and fill recycleView
@@ -41,7 +41,7 @@ class AccountManagementFragment : Fragment() {
             accounts ->
             adapter.updateList(accounts)
         }
-
+        val progressDialog = createProgressDialog()
         viewModel.loadingIndicator.observe(this){
             if (it){
                 progressDialog.show()

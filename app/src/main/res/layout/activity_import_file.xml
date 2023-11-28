@@ -46,14 +46,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
-                                android:text="Danh sách sinh viên"
+                                android:text="Nhập danh sách sinh viên"
                                 android:textColor="@color/black"
                                 android:textStyle="bold"
                                 android:textSize="20dp"
                                 android:layout_width="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"/>
-
                         </LinearLayout>
 
                         <TableLayout

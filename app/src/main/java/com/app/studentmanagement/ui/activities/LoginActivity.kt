@@ -52,6 +52,17 @@ class LoginActivity : AppCompatActivity() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return  dialog
     }
+    override fun onBackPressed() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setMessage("Are you sure you want to exit?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                super.onBackPressed() // Gọi phương thức cha trước khi thoát ứng dụng
+                finishAffinity()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

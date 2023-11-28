@@ -48,27 +48,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp">
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginTop="0dp"
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/imageAvatar"
+                                android:layout_width="85dp"
+                                android:layout_height="85dp"
+                                android:layout_centerInParent="true"
+                                app:shapeAppearance="@style/avatarBoder"
+                                android:scaleType="centerCrop"
                                 android:src="@drawable/avt" />
-
-                            <ImageButton
-                                android:id="@+id/buttonUploadAvt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginStart="44dp"
-                                android:layout_marginTop="70dp"
-                                android:layout_marginEnd="-30dp"
-                                android:background="@null"
-                                android:src="@drawable/ic_upload_avt" />
 
                         </RelativeLayout>
                         <TextView
@@ -202,7 +189,7 @@
                                 android:layout_gravity="center"
                                 android:layout_height="wrap_content">
                                 <ImageButton
-                                    android:id="@+id/buttonDownload"
+                                    android:id="@+id/buttonImport"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_download"
                                     android:background="@color/white"
@@ -210,14 +197,7 @@
                                     android:layout_marginHorizontal="5dp"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
-                                <ImageButton
-                                    android:id="@+id/buttonUploadFile"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_upload"
-                                    android:layout_weight="1"
-                                    android:background="@color/white"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
+
                                 <ImageButton
                                     android:id="@+id/buttonAdd"
                                     android:layout_gravity="center"
