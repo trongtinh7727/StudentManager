@@ -69,6 +69,7 @@ class AccountInformationActivity : AppCompatActivity() {
 
         binding.buttonShowHistory.setOnClickListener{
             val intent = Intent(this, LoginHistoryActivity::class.java)
+            intent.putExtra("account",account)
             startActivity(intent)
         }
 

@@ -21,6 +21,7 @@ import com.app.studentmanagement.ui.fragments.PersonalFragment
 import com.app.studentmanagement.ui.fragments.StudentManagementFragment
 import com.app.studentmanagement.viewmodels.AccountViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.imageview.ShapeableImageView
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,10 +64,13 @@ class MainActivity : AppCompatActivity() {
             binding.drawableLayout.closeDrawer(GravityCompat.START)
         }
 
-        var buttonLogin  = headerView.findViewById<Button>(R.id.buttonLogin)
-        buttonLogin.setOnClickListener {
-            var intent = Intent(this,LoginActivity::class.java)
-            startActivity(intent)
+        var buttonLogout  = headerView.findViewById<Button>(R.id.buttonLogout)
+        buttonLogout.setOnClickListener {
+            viewModel.logout {
+                var intent = Intent(this,LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
 
@@ -77,7 +81,11 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(PersonalFragment())
             binding.drawableLayout.closeDrawer(GravityCompat.START)
         }
-
+        var avatar = headerView.findViewById<ShapeableImageView>(R.id.imageAvatarHeader)
+        avatar.setOnClickListener{
+            replaceFragment(PersonalFragment())
+            binding.drawableLayout.closeDrawer(GravityCompat.START)
+        }
 
         //binding data
         viewModel.setCurrentUser()
@@ -86,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             val textViewName = headerView.findViewById<TextView>(R.id.textViewName)
             val textViewID = headerView.findViewById<TextView>(R.id.textViewID)
             val textViewEmail = headerView.findViewById<TextView>(R.id.textViewEmail)
-            val imageAvatar = headerView.findViewById<ImageButton>(R.id.imageAvatar)
+            val imageAvatar = headerView.findViewById<ShapeableImageView>(R.id.imageAvatarHeader)
 
             textViewName.setText(account.name)
             textViewID.setText("MS: "+account.id)
@@ -97,6 +105,8 @@ class MainActivity : AppCompatActivity() {
                 .into(imageAvatar)
 
         }
+
+
     }
      fun replaceFragment(fragment : Fragment ): Boolean {
         val fragmentManager = supportFragmentManager

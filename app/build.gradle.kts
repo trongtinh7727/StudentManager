@@ -49,7 +49,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation( "androidx.navigation:navigation-fragment:2.7.5") // Use the version appropriate for your project
     implementation( "androidx.navigation:navigation-ui:2.7.5" )
-
+    implementation("com.google.firebase:firebase-storage:20.0.1")
+    implementation("com.google.android.material:material:1.10.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -58,7 +59,7 @@ dependencies {
     //loadImage
     implementation("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
-
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
