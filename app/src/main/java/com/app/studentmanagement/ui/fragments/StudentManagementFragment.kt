@@ -2,8 +2,11 @@ package com.app.studentmanagement.ui.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -131,6 +134,15 @@ class StudentManagementFragment : Fragment() {
             createFileLauncher.launch(intent)
         })
 
+        val progressDialog = createProgressDialog()
+        viewModel.loadingIndicator.observe(this){
+            if (it){
+                progressDialog.show()
+            }else{
+                progressDialog.dismiss()
+            }
+        }
+
         return binding.root
     }
     private fun checkPermissions(): Boolean {
@@ -198,5 +210,13 @@ class StudentManagementFragment : Fragment() {
         binding.buttonAdd.visibility = View.GONE
         binding.buttonImport.visibility = View.GONE
     }
-
+    private fun createProgressDialog(): AlertDialog {
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_progress,null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return  dialog
+    }
 }
