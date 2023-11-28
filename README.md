@@ -46,7 +46,7 @@
 ## Project Overview
 This project is a comprehensive study of Google Firebase Firestore with the objective of developing a real-time app for student information management. The app will provide various functionalities related to user account management, student management, and data import/export.
 
-**Compatibility:** This project is designed to work with Android 11 and above.
+**Compatibility:** This project is designed to work with Android 11 and above.  You can install the `StudentManager.apk` to run the application on your Android device.
 ## User Accounts
 The app includes the following user accounts for testing:
 - **Admin:** admin@app.com - admin123
