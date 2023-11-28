@@ -92,7 +92,7 @@ class AccountAdapter(  private  var context : Context, private val viewModel: Ac
         val buttonBack = dialog.findViewById<TextView>(R.id.buttonBack)
 
         buttonConfirmDelete.setOnClickListener {
-            viewModel.deleteAccount(account)
+            viewModel.deleteAccount(account,context)
             dialog.dismiss()
         }
         buttonBack.setOnClickListener {

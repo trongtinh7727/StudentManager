@@ -1,7 +1,9 @@
 package com.app.studentmanagement.viewmodels
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,12 +55,19 @@ class AccountViewModel : ViewModel() {
             }
         }
     }
-    fun deleteAccount(account: Account){
+    fun deleteAccount(account: Account, applicationContext:Context){
         _loadingIndicator.value = true
-        accountRepository.deleteUser(account.uid){
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null && uid != account.uid) {
+            accountRepository.deleteUser(account.uid){
+                _loadingIndicator.postValue(false)
+            }
+        } else {
+            Toast.makeText(applicationContext, "Không thể xóa tài khoản của chính bạn!", Toast.LENGTH_SHORT).show()
             _loadingIndicator.postValue(false)
         }
     }
+
 
     fun updateAccount(account: Account,password: String, onComplete: (Boolean) -> Unit){
         _loadingIndicator.value = true
