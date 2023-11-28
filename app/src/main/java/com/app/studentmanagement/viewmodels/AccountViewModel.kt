@@ -141,6 +141,7 @@ class AccountViewModel : ViewModel() {
     }
 
     fun upLoadAvatar(imageUri: Uri) {
+        _loadingIndicator.value = true
         FirebaseAuth.getInstance().uid?.let { userID ->
             val storageRef =
                 FirebaseStorage.getInstance().reference.child("/Users/Avatars/${userID}")
@@ -150,8 +151,13 @@ class AccountViewModel : ViewModel() {
                 storageRef.downloadUrl.addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
                     accountRepository.updateAvatar(userID, downloadUrl) {
+                        _loadingIndicator.value = false
                     }
+                }.addOnFailureListener{
+                    _loadingIndicator.value = false
                 }
+            }.addOnFailureListener{
+                _loadingIndicator.value = false
             }
         }
     }
