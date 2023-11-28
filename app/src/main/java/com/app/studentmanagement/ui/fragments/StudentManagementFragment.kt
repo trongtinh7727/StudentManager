@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.studentmanagement.R
 import com.app.studentmanagement.adapters.StudentAdapter
 import com.app.studentmanagement.data.models.Role
+import com.app.studentmanagement.data.models.SortCriteria
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.FragmentStudentManagementBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
@@ -44,6 +45,8 @@ class StudentManagementFragment : Fragment() {
     private lateinit var csvFileLauncher: ActivityResultLauncher<Intent>
     private lateinit var createFileLauncher: ActivityResultLauncher<Intent>
     private var listStudent: MutableList<Student> = mutableListOf()
+
+    var currentSortCriteria = SortCriteria.ID
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,6 +69,9 @@ class StudentManagementFragment : Fragment() {
         viewModel.students.observe(this){
             listStudents->
             listStudent = listStudents
+            currentSortCriteria = SortCriteria.ID
+            binding.textViewID.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0)
+            sortData()
             adapter.updateList(listStudents)
         }
 
@@ -141,6 +147,44 @@ class StudentManagementFragment : Fragment() {
             }else{
                 progressDialog.dismiss()
             }
+        }
+
+        binding.textViewID.setOnClickListener {
+            if (currentSortCriteria == SortCriteria.ID) {
+                currentSortCriteria = SortCriteria.ID_DESCENDING
+                binding.textViewID.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0)
+            } else {
+                currentSortCriteria = SortCriteria.ID
+                binding.textViewID.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0)
+            }
+            binding.textViewClass.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            binding.textViewName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            sortData()
+        }
+
+        binding.textViewName.setOnClickListener {
+            if (currentSortCriteria == SortCriteria.FULL_NAME) {
+                currentSortCriteria = SortCriteria.FULL_NAME_DESCENDING
+                binding.textViewName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0)
+            } else {
+                currentSortCriteria = SortCriteria.FULL_NAME
+                binding.textViewName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0)
+            }
+            binding.textViewClass.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            binding.textViewID.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            sortData()
+        }
+        binding.textViewClass.setOnClickListener {
+            if (currentSortCriteria == SortCriteria.CLASS) {
+                currentSortCriteria = SortCriteria.CLASS_DESCENDING
+                binding.textViewClass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0)
+            } else {
+                currentSortCriteria = SortCriteria.CLASS
+                binding.textViewClass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up, 0)
+            }
+            binding.textViewID.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            binding.textViewName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            sortData()
         }
 
         return binding.root
@@ -219,4 +263,42 @@ class StudentManagementFragment : Fragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return  dialog
     }
+
+    fun sortData() {
+        when (currentSortCriteria) {
+            SortCriteria.ID -> {
+                listStudent.sortBy { it.id }
+            }
+            SortCriteria.ID_DESCENDING -> {
+                listStudent.sortByDescending { it.id }
+            }
+            SortCriteria.FULL_NAME -> {
+                listStudent = listStudent.sortedWith(compareBy { student ->
+                    student.fullName.split(" ").let { parts ->
+                        val lastName = parts.lastOrNull() ?: ""
+                        val firstName = parts.dropLast(1).joinToString(" ")
+                        "$lastName, $firstName"
+                    }
+                }).map { it } as MutableList<Student>
+
+            }
+            SortCriteria.FULL_NAME_DESCENDING -> {
+                listStudent = listStudent.sortedWith(compareByDescending { student ->
+                    student.fullName.split(" ").let { parts ->
+                        val lastName = parts.lastOrNull() ?: ""
+                        val firstName = parts.dropLast(1).joinToString(" ")
+                        "$lastName, $firstName"
+                    }
+                }).map { it } as MutableList<Student>
+            }
+            SortCriteria.CLASS -> {
+                listStudent.sortBy { it.classRoom }
+            }
+            SortCriteria.CLASS_DESCENDING -> {
+                listStudent.sortByDescending { it.classRoom }
+            }
+        }
+        adapter.updateList(listStudent)
+    }
+
 }

@@ -31,7 +31,7 @@ class LoginHistoryActivity : AppCompatActivity() {
         }
         val adapter = HistoryAdapter()
         viewModel.loginHistories.observe(this){
-            adapter.updateList(it)
+            adapter.updateList(it.sortedByDescending { it.time })
             adapter.notifyDataSetChanged()
         }
         binding.recycleViewListHistoryLogin.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

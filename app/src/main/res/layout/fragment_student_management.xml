@@ -138,7 +138,7 @@
                             android:layout_width="0dp" />
                         <TextView
                             android:id="@+id/textViewName"
-                            android:text="Họ và Tên"
+                            android:text="Họ Tên"
                             android:gravity="center"
                             style="@style/textViewTitle2"
                             android:textSize="14sp"

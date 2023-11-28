@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -55,9 +57,27 @@ class PersonalFragment : Fragment() {
         binding.buttonUploadAvt.setOnClickListener(View.OnClickListener {
             showImagePickerOptions()
         })
+
+        val progressDialog = createProgressDialog()
+        viewModel.loadingIndicator.observe(this){
+            if (it){
+                progressDialog.show()
+            }else{
+                progressDialog.dismiss()
+            }
+        }
         return binding.root
     }
 
+    private fun createProgressDialog(): AlertDialog {
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_progress,null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return  dialog
+    }
     private fun setupData(account: Account) {
         binding.textViewName.setText(account.name)
         binding.editTextID.setText(account.id)
