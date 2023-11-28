@@ -252,10 +252,11 @@ class AddEditStudentActivity : AppCompatActivity() {
         if (email.isEmpty() || !email.matches(emailRegex.toRegex())) {
             binding.layoutEmail.error = "Email không hợp lệ!"
             onComplete(false)
-        } else if (existingStudent != null && email == existingStudent!!.email) {
+            return
+        } else if (existingStudent != null && email == existingStudent!!.email && importMode == null) {
             binding.layoutEmail.error = null
             onComplete(true)
-        } else {
+        }else {
             viewModel.isEmailUnique(email) { isSuccess ->
                 if (!isSuccess) {
                     binding.layoutEmail.error = "Email đã tồn tại!"
@@ -266,6 +267,7 @@ class AddEditStudentActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
     private fun setupAddMode() {
