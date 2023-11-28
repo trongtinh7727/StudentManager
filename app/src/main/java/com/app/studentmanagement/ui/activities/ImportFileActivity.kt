@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -19,14 +20,17 @@ import com.app.studentmanagement.data.StudentAdapterListener
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.ActivityImportFileBinding
 import com.app.studentmanagement.viewmodels.StudentViewModel
+import kotlinx.coroutines.*
 
 class ImportFileActivity : AppCompatActivity(), StudentAdapterListener {
     private lateinit var viewModel: StudentViewModel
     var listStudents: MutableList<Student>? = mutableListOf()
+    var duplicateEmai: MutableList<Student> = mutableListOf()
     private lateinit var adapter: StudentAdapter
     private lateinit var binding: ActivityImportFileBinding
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var index = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_import_file)
@@ -35,8 +39,10 @@ class ImportFileActivity : AppCompatActivity(), StudentAdapterListener {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back);
 
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
-        adapter = StudentAdapter(this, viewModel, this)
+
         listStudents = intent.getSerializableExtra("listStudent") as? ArrayList<Student>
+
+        adapter = StudentAdapter(this, viewModel, this)
 
         listStudents?.let { adapter.updateList(it) }
         adapter.notifyDataSetChanged()
@@ -72,13 +78,54 @@ class ImportFileActivity : AppCompatActivity(), StudentAdapterListener {
         }
 
         binding.buttonSave.setOnClickListener(View.OnClickListener {
-            listStudents?.let { it1 ->
-                viewModel.addListStudent(it1) {
-                    finish()
+            checkAllEmailsAndSave()
+        })
+    }
+    fun checkAllEmail(){
+        listStudents?.let { students ->
+            val duplicateEmails = mutableListOf<Student>()
+            var remainingEmailChecks = students.size
+
+            for (student in students) {
+                viewModel.isEmailUnique(student.email) { isUnique ->
+                    remainingEmailChecks--
+                    if (!isUnique) {
+                        duplicateEmails.add(student)
+                    }
+                    if (remainingEmailChecks == 0) {
+                        if (!duplicateEmails.isEmpty()) {
+                            adapter.setEmailUniquenessMap(duplicateEmails)
+                        }
+                    }
                 }
             }
-        })
+        }
+    }
+    private fun checkAllEmailsAndSave() {
+        listStudents?.let { students ->
+            val duplicateEmails = mutableListOf<Student>()
+            var remainingEmailChecks = students.size
 
+            for (student in students) {
+                viewModel.isEmailUnique(student.email) { isUnique ->
+                    remainingEmailChecks--
+                    if (!isUnique) {
+                        duplicateEmails.add(student)
+                    }
+                    if (remainingEmailChecks == 0) {
+                        if (duplicateEmails.isEmpty()) {
+                            Toast.makeText(this@ImportFileActivity, "Đang lưu", Toast.LENGTH_SHORT).show()
+                            viewModel.addListStudent(students) {
+                                finish()
+                            }
+                        } else {
+                            adapter.setEmailUniquenessMap(duplicateEmails)
+                            Toast.makeText(this@ImportFileActivity, "Có một hoặc nhiều email đã tồn tại hoặc trùng vui lòng sửa lại!.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onEditStudent(student: Student, index: Int) {

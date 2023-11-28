@@ -22,11 +22,17 @@ class StudentAdapter(private  var context : Context, private val viewModel: Stud
 ) : RecyclerView.Adapter<StudentAdapter.ViewHolder>()  {
 
     private var isEdit = true
-
+    private var emailUniquenessMap: MutableList<Student> = mutableListOf()
 
     private var items: MutableList<Student> = mutableListOf()
     fun updateList(newItems: MutableList<Student>) {
         items = newItems
+        notifyDataSetChanged()
+    }
+
+
+    fun setEmailUniquenessMap(emailUniquenessMap: MutableList<Student>){
+        this.emailUniquenessMap = emailUniquenessMap
         notifyDataSetChanged()
     }
 
@@ -48,6 +54,13 @@ class StudentAdapter(private  var context : Context, private val viewModel: Stud
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
+        if (listener != null) {
+            if (hasDuplicate(item) || nonUniqueEmai(item)) {
+                holder.setError()
+            }else{
+                holder.setValid()
+            }
+        }
         if (!isEdit){
             holder.setViewMode()
         }else{
@@ -92,10 +105,17 @@ class StudentAdapter(private  var context : Context, private val viewModel: Stud
        fun setViewMode(){
            binding.layoutAction.visibility = View.GONE
        }
-    }
 
+       fun setError(){
+       binding.textViewName.setTextColor(Color.RED)
+       binding.textViewClass.setTextColor(Color.RED)
+       }
 
-
+       fun setValid(){
+           binding.textViewName.setTextColor(Color.BLACK)
+           binding.textViewClass.setTextColor(Color.BLACK)
+       }
+   }
     private fun showDeleteConfirm(student: Student){
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -127,6 +147,13 @@ class StudentAdapter(private  var context : Context, private val viewModel: Stud
         }
         dialog.show()
 
+    }
+    private fun hasDuplicate(student: Student): Boolean {
+        return items.any { it != student && it.email == student.email}
+    }
+
+    private fun nonUniqueEmai(student: Student): Boolean{
+        return emailUniquenessMap.any { it == student || it.email == student.email }
     }
 
 
