@@ -30,7 +30,7 @@ class CertificateAdapter :
         val item = items[position]
         holder.bind(item)
         if (!isEdit){
-            holder.buttonDelete.visibility = View.GONE
+            holder.setViewMode()
         }
         holder.buttonDelete.setOnClickListener(View.OnClickListener {
             if (isEdit){
@@ -52,6 +52,11 @@ class CertificateAdapter :
         fun bind(item: Certificate) {
             binding.certificate = item
             buttonDelete =binding.buttonEditDelete
+        }
+        fun setViewMode(){
+            binding.buttonEditDelete.visibility = View.GONE
+            binding.textViewName.isEnabled = false
+            binding.textViewID.isEnabled = false
         }
     }
 }

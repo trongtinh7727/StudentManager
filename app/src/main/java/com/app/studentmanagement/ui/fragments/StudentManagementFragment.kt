@@ -20,10 +20,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.studentmanagement.R
 import com.app.studentmanagement.adapters.StudentAdapter
+import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.FragmentStudentManagementBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
 import com.app.studentmanagement.ui.activities.ImportFileActivity
+import com.app.studentmanagement.viewmodels.AccountViewModel
 import com.app.studentmanagement.viewmodels.StudentViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -31,8 +33,9 @@ import java.time.format.DateTimeFormatter
 
 class StudentManagementFragment : Fragment() {
 
-
+    private lateinit var accountViewModel: AccountViewModel
     private lateinit var binding: FragmentStudentManagementBinding
+    private lateinit var adapter: StudentAdapter
     private lateinit var viewModel: StudentViewModel
     private val REQUEST_PERMISSION_CODE = 101
     private lateinit var csvFileLauncher: ActivityResultLauncher<Intent>
@@ -45,8 +48,17 @@ class StudentManagementFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentStudentManagementBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
-        val adapter = StudentAdapter(requireContext(),viewModel,null)
+        adapter = StudentAdapter(requireContext(),viewModel,null)
 
+        accountViewModel = requireActivity().run {
+            ViewModelProvider(this).get(AccountViewModel::class.java)
+        }
+        accountViewModel.setCurrentUser()
+        accountViewModel.currentUser.observe(this){
+            if (it.role == Role.Employee){
+                setUpEmployee()
+            }
+        }
         viewModel.getAllStudent()
         viewModel.students.observe(this){
             listStudents->
@@ -180,5 +192,11 @@ class StudentManagementFragment : Fragment() {
     }
 
 
+    fun setUpEmployee(){
+        adapter.setIsEdit(false)
+        binding.layoutAction.visibility = View.GONE
+        binding.buttonAdd.visibility = View.GONE
+        binding.buttonImport.visibility = View.GONE
+    }
 
 }

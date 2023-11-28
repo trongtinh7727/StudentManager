@@ -21,6 +21,7 @@ import com.app.studentmanagement.viewmodels.StudentViewModel
 class StudentAdapter(private  var context : Context, private val viewModel: StudentViewModel, private val listener: StudentAdapterListener?
 ) : RecyclerView.Adapter<StudentAdapter.ViewHolder>()  {
 
+    private var isEdit = true
 
 
     private var items: MutableList<Student> = mutableListOf()
@@ -41,18 +42,24 @@ class StudentAdapter(private  var context : Context, private val viewModel: Stud
     fun getListItems():MutableList<Student>{
         return items
     }
-
+    fun setIsEdit(isEdit: Boolean){
+        this.isEdit = isEdit
+    }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
-        holder.buttonDelete.setOnClickListener(View.OnClickListener {
-            if (listener!= null){
-                items.removeAt(position)
-                notifyDataSetChanged()
-            }else{
-                showDeleteConfirm(item)
-            }
-        })
+        if (!isEdit){
+            holder.setViewMode()
+        }else{
+            holder.buttonDelete.setOnClickListener(View.OnClickListener {
+                if (listener!= null){
+                    items.removeAt(position)
+                    notifyDataSetChanged()
+                }else{
+                    showDeleteConfirm(item)
+                }
+            })
+        }
     }
 
     override fun getItemCount(): Int {
@@ -81,8 +88,10 @@ class StudentAdapter(private  var context : Context, private val viewModel: Stud
                     context.startActivity(intent)
                 }
             }
-
         }
+       fun setViewMode(){
+           binding.layoutAction.visibility = View.GONE
+       }
     }
 
 

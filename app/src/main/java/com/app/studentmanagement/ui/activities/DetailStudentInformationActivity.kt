@@ -23,16 +23,19 @@ import com.app.studentmanagement.adapters.CertificateAdapter
 import com.app.studentmanagement.adapters.StudentAdapter
 import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.Certificate
+import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.ActivityAddEditAccountBinding
 import com.app.studentmanagement.databinding.ActivityAddEditStudentBinding
 import com.app.studentmanagement.databinding.ActivityDetailStudentInformationBinding
+import com.app.studentmanagement.viewmodels.AccountViewModel
 import com.app.studentmanagement.viewmodels.StudentViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class DetailStudentInformationActivity : AppCompatActivity() {
 
+    private lateinit var accountViewModel: AccountViewModel
     private lateinit var viewModel: StudentViewModel
     private lateinit var binding: ActivityDetailStudentInformationBinding
     private var listCertificate: MutableList<Certificate> = ArrayList()
@@ -46,6 +49,15 @@ class DetailStudentInformationActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back);
+
+        accountViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
+        accountViewModel.setCurrentUser()
+        accountViewModel.currentUser.observe(this){
+            if (it.role == Role.Employee){
+                binding.buttonEdit.visibility = View.GONE
+                binding.buttonDelete.visibility = View.GONE
+            }
+        }
 
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
         existingStudent = intent.getSerializableExtra("student") as Student?

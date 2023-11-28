@@ -37,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_width="0dp" />
         <LinearLayout
+            android:id="@+id/layoutAction"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:layout_marginHorizontal="2dp"

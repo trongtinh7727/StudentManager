@@ -10,11 +10,13 @@ import android.widget.TextView
 import com.app.studentmanagement.R
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.databinding.ActivityMainBinding
 import com.app.studentmanagement.ui.fragments.AccountManagementFragment
 import com.app.studentmanagement.ui.fragments.PersonalFragment
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         var buttonStudent  = headerView.findViewById<Button>(R.id.buttonManagementStudent)
 
 
-        replaceFragment(AccountManagementFragment())
+        replaceFragment(StudentManagementFragment())
         buttonAcc.setOnClickListener {
             replaceFragment(AccountManagementFragment())
             binding.drawableLayout.closeDrawer(GravityCompat.START)
@@ -96,6 +98,12 @@ class MainActivity : AppCompatActivity() {
             val textViewEmail = headerView.findViewById<TextView>(R.id.textViewEmail)
             val imageAvatar = headerView.findViewById<ShapeableImageView>(R.id.imageAvatarHeader)
 
+            val cardViewManagerAccount = headerView.findViewById<CardView>(R.id.cardViewManagementAccount)
+            if (account.role == Role.Admin){
+                cardViewManagerAccount.visibility = View.VISIBLE
+            }else{
+                cardViewManagerAccount.visibility = View.GONE
+            }
             textViewName.setText(account.name)
             textViewID.setText("MS: "+account.id)
             textViewEmail.setText("Email: "+account.email)
