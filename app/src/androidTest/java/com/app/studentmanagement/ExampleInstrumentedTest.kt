@@ -46,36 +46,36 @@ class ExampleInstrumentedTest {
     }
     fun generateRandomName(i: Int): String {
         val names = listOf(
-            "Clarance Corzon",
-            "Kathye Monte",
-            "Hilde Eveque",
-            "Ailis Karle",
-            "Sumner Drennan",
-            "Beauregard Morecomb",
-            "Milissent Dinnington",
-            "Vickie Wrixon",
-            "Rorie Wanden",
-            "Ethelind Rickerby",
-            "Elsa Clixby",
-            "Ranice Brewitt",
-            "Dickie Ellacott",
-            "Llewellyn Harmes",
-            "Aeriell Volcker",
-            "Klarika Pantone",
-            "Michaelina Zotto",
-            "Melamie Barcroft",
-            "Burton Ragot",
-            "Catherin Paulitschke",
-            "Rafaellle Trail",
-            "Joyan Fitzmaurice",
-            "Jody Whitlaw",
-            "Gualterio Harnetty",
-            "Michail Pandya",
-            "Trumann Tidswell",
-            "Penny Trubshaw",
-            "Aimil Shurrock",
-            "Clevie Ellesworthe",
-            "Dunc Kinig"
+            "Đặng Quang Hà",
+            "Phạm Trung Linh",
+            "Trần Thành Khoa",
+            "Trần Tâm Dương",
+            "Đặng Văn Linh",
+            "Đặng Tâm Linh",
+            "Vũ Hữu Cường",
+            "Hoàng Quang Hà",
+            "Vũ Ngọc Khoa",
+            "Lê Văn Cường",
+            "Vũ Hữu Khoa",
+            "Vũ Trung Nhung",
+            "Vũ Tâm Dương",
+            "Huỳnh  Bảo",
+            "Vũ Thành Minh",
+            "Trần Trung Minh",
+            "Trần  Minh",
+            "Huỳnh Trung Linh",
+            "Huỳnh  Anh",
+            "Huỳnh Thị Cường",
+            "Đặng Tâm Bảo",
+            "Huỳnh Ngọc Linh",
+            "Võ  Minh",
+            "Phạm Hữu Bảo",
+            "Huỳnh Tâm Khoa",
+            "Phạm  Minh",
+            "Hoàng Tâm Khoa",
+            "Vũ  Phương",
+            "Phan Hữu Bảo",
+            "Nguyễn Ngọc Minh"
         )
         return names[i]
     }
@@ -153,14 +153,14 @@ class ExampleInstrumentedTest {
 
 
             val student = Student(
-                id = "SV-$i",
                 email = emailValue,
                 fullName = randomName,
                 classRoom = "210$randomFacultyCode",
-                faculty = randomFaculty
+                faculty = randomFaculty,
+                facultyCode = randomFacultyCode
             )
 
-            studentRepository.addStudent(student,randomFacultyCode){
+            studentRepository.addStudent(student){
                 Log.i("Test", "createStudet: ${student.fullName}")
             }
             Thread.sleep(1000)

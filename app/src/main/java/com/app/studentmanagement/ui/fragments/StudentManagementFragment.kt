@@ -20,10 +20,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.studentmanagement.R
 import com.app.studentmanagement.adapters.StudentAdapter
+import com.app.studentmanagement.data.models.Student
 import com.app.studentmanagement.databinding.FragmentStudentManagementBinding
 import com.app.studentmanagement.ui.activities.AddEditStudentActivity
 import com.app.studentmanagement.ui.activities.ImportFileActivity
 import com.app.studentmanagement.viewmodels.StudentViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class StudentManagementFragment : Fragment() {
@@ -33,7 +36,8 @@ class StudentManagementFragment : Fragment() {
     private lateinit var viewModel: StudentViewModel
     private val REQUEST_PERMISSION_CODE = 101
     private lateinit var csvFileLauncher: ActivityResultLauncher<Intent>
-
+    private lateinit var createFileLauncher: ActivityResultLauncher<Intent>
+    private var listStudent: MutableList<Student> = mutableListOf()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +50,7 @@ class StudentManagementFragment : Fragment() {
         viewModel.getAllStudent()
         viewModel.students.observe(this){
             listStudents->
+            listStudent = listStudents
             adapter.updateList(listStudents)
         }
 
@@ -71,6 +76,15 @@ class StudentManagementFragment : Fragment() {
             }
         }
 
+        createFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    viewModel.exportCSVFile(uri, requireActivity().contentResolver, listStudent)
+                }
+            }
+        }
+
+
         binding.recycleViewListStudent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recycleViewListStudent.adapter = adapter
 
@@ -92,6 +106,17 @@ class StudentManagementFragment : Fragment() {
             } else {
                 requestPermissions()
             }
+        })
+
+        binding.buttonExport.setOnClickListener(View.OnClickListener {
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                val currentDateTime = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(
+                    LocalDateTime.now())
+                putExtra(Intent.EXTRA_TITLE, "sv_$currentDateTime.csv")
+            }
+            createFileLauncher.launch(intent)
         })
 
         return binding.root

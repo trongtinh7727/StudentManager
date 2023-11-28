@@ -50,15 +50,11 @@ class AddEditStudentActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
 
         viewModel = ViewModelProvider(this)[StudentViewModel::class.java]
-
         existingStudent = intent.getSerializableExtra("student") as Student?
         importMode = intent.getSerializableExtra("importMode") as String?
-       if(existingStudent!= null) {
+        if(existingStudent!= null) {
             setupEditMode()
-        } else {
-            setupAddMode()
         }
-
         adapter.updateList(listCertificate);
         binding.recycleViewListCerfiticate.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recycleViewListCerfiticate.adapter = adapter
@@ -93,6 +89,11 @@ class AddEditStudentActivity : AppCompatActivity() {
             facultyCode = facultiesCode[position]
         }
 
+        if(existingStudent== null) {
+            faculty = faculties[0]
+            facultyCode = facultiesCode[0]
+            binding.autoCompleteTextViewOption.setText(faculty,false)
+        }
         csvFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
@@ -192,21 +193,23 @@ class AddEditStudentActivity : AppCompatActivity() {
                 email =  email,
                 faculty = faculty,
                 fullName =  fullName,
+                facultyCode = facultyCode,
                 classRoom =  classRoom,
                 certificates = listCertificate)
             if (importMode != null){
-                val facultyCodeMap = resources.getStringArray(R.array.faculties)
-                    .zip(resources.getStringArray(R.array.facultiesCode))
-                    .toMap()
 
-                val facultyCode = facultyCodeMap[student.faculty] ?: ""
-                student.facultyCode = facultyCode
+                if (student.facultyCode.isBlank()){
+                    student.facultyCode = existingStudent?.facultyCode ?: ""
+                }
                 student.id = existingStudent!!.id
                 val returnIntent = Intent()
                 returnIntent.putExtra("student", student)
                 setResult(Activity.RESULT_OK, returnIntent)
                 finish()
             }else if (existingStudent != null){
+                if (student.facultyCode.isBlank()){
+                    student.facultyCode = existingStudent?.facultyCode ?: ""
+                }
                 student.id = existingStudent!!.id
                 viewModel.updateStudent(student){
                     val returnIntent = Intent()
@@ -215,7 +218,8 @@ class AddEditStudentActivity : AppCompatActivity() {
                     finish()
                 }
             }else{
-                viewModel.createStudent(student,facultyCode){
+                student.facultyCode = facultyCode
+                viewModel.createStudent(student){
                     finish()
                 }
             }
@@ -265,6 +269,7 @@ class AddEditStudentActivity : AppCompatActivity() {
     }
 
     private fun setupAddMode() {
+
 
     }
 

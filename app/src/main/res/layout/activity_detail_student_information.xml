@@ -223,7 +223,7 @@
                                 android:layout_gravity="center"
                                 android:layout_height="wrap_content">
                                 <ImageButton
-                                    android:id="@+id/buttonImportFile"
+                                    android:id="@+id/buttonExportFile"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_upload"
                                     android:layout_weight="1"

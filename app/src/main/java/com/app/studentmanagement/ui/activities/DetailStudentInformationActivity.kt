@@ -28,6 +28,8 @@ import com.app.studentmanagement.databinding.ActivityAddEditAccountBinding
 import com.app.studentmanagement.databinding.ActivityAddEditStudentBinding
 import com.app.studentmanagement.databinding.ActivityDetailStudentInformationBinding
 import com.app.studentmanagement.viewmodels.StudentViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class DetailStudentInformationActivity : AppCompatActivity() {
 
@@ -36,6 +38,7 @@ class DetailStudentInformationActivity : AppCompatActivity() {
     private var listCertificate: MutableList<Certificate> = ArrayList()
     val adapter = CertificateAdapter()
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var createFileLauncher: ActivityResultLauncher<Intent>
     private var existingStudent: Student? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +94,24 @@ class DetailStudentInformationActivity : AppCompatActivity() {
                 progressDialog.dismiss()
             }
         }
+        createFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    existingStudent?.let { viewModel.exportCertificatesCSVFile(uri, contentResolver, it.certificates) }
+                }
+            }
+        }
+
+        binding.buttonExportFile.setOnClickListener(View.OnClickListener {
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                val currentDateTime = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(
+                    LocalDateTime.now())
+                putExtra(Intent.EXTRA_TITLE, "cert_$currentDateTime.csv")
+            }
+            createFileLauncher.launch(intent)
+        })
     }
     private fun showDeleteConfirm(student: Student){
         val dialog = Dialog(this)
