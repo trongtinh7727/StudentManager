@@ -24,11 +24,19 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonLogin.setOnClickListener(View.OnClickListener {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editPass.text.toString()
-            viewModel.login(email,password){
-                isSuccess ->
-                if (isSuccess){
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+            if (!isValidEmail(email)) {
+                binding.layoutEmail.error = "Email không hợp lệ!"
+            }else {
+                binding.layoutEmail.error = null
+                viewModel.login(email,password){
+                        isSuccess ->
+                    if (isSuccess){
+                        binding.layoutPass.error = null
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    }else{
+                        binding.layoutPass.error = "Tài Khoản hoặc mật khẩu không chính xác!"
+                    }
                 }
             }
         })
@@ -41,8 +49,18 @@ class LoginActivity : AppCompatActivity() {
                 progressDialog.dismiss()
             }
         }
-    }
 
+        binding.editTextEmail.setOnFocusChangeListener { view, hasFocus ->
+            if (!hasFocus) {
+                val enteredInput = binding.editTextEmail.text.toString()
+                if (!isValidEmail(enteredInput)) {
+                    binding.layoutEmail.error = "Email không hợp lệ!"
+                }else {
+                    binding.layoutEmail.error = null
+                }
+            }
+        }
+    }
     private fun createProgressDialog(): AlertDialog {
         val builder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_progress,null)
@@ -51,6 +69,13 @@ class LoginActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return  dialog
+    }
+    fun isValidEmail(email: String): Boolean {
+        if (email.isEmpty()){
+            return false
+        }
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+        return email.matches(emailRegex.toRegex())
     }
     override fun onBackPressed() {
         androidx.appcompat.app.AlertDialog.Builder(this)
