@@ -11,6 +11,7 @@ import com.app.studentmanagement.data.models.Account
 import com.app.studentmanagement.data.models.LoginHistory
 import com.app.studentmanagement.data.models.Role
 import com.app.studentmanagement.data.repository.AccountRepository
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 
@@ -33,6 +34,9 @@ class AccountViewModel : ViewModel() {
     private val _loginHistories = MutableLiveData<List<LoginHistory>>()
     val  loginHistories: LiveData<List<LoginHistory>>
         get() = _loginHistories
+
+    private val secondaryFirebaseApp = FirebaseApp.getInstance("secondary")
+    private val secondaryFirebaseAuth = FirebaseAuth.getInstance(secondaryFirebaseApp)
     fun getAccounts(role: Role){
         _loadingIndicator.value = true
         accountRepository.getAccountByRole(role){
@@ -110,7 +114,7 @@ class AccountViewModel : ViewModel() {
         _loadingIndicator.value = true
         if (!emailValue.isNullOrEmpty() && !passwordValue.isNullOrEmpty()) {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(emailValue, passwordValue)
-                .addOnCompleteListener { task ->
+                .addOnSuccessListener{ task ->
                     onComplete(true)
                     FirebaseAuth.getInstance().currentUser?.let {
                          val device = Build.MODEL + " - " + Build.DEVICE
@@ -120,7 +124,10 @@ class AccountViewModel : ViewModel() {
                             _loadingIndicator.value = false
                         }
                     }
-
+                }
+                .addOnFailureListener {
+                    onComplete(false)
+                    _loadingIndicator.value = false
                 }
         } else {
             onComplete(false)
@@ -131,6 +138,7 @@ class AccountViewModel : ViewModel() {
     fun logout(onComplete: (Boolean) -> Unit) {
         _loadingIndicator.value = true
         try {
+            secondaryFirebaseAuth.signOut()
             FirebaseAuth.getInstance().signOut()
             onComplete(true)
         } catch (e: Exception) {
@@ -163,10 +171,10 @@ class AccountViewModel : ViewModel() {
     }
 
 
-    fun createAccount(account: Account,  password:String, onComplete: (Boolean) -> Unit){
+    fun createAccount(account: Account, password: String, onComplete: (Boolean) -> Unit) {
         _loadingIndicator.value = true
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(account.email, password)
+        secondaryFirebaseAuth.createUserWithEmailAndPassword(account.email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val firebaseUser = task.result?.user
@@ -174,9 +182,11 @@ class AccountViewModel : ViewModel() {
                         account.uid = firebaseUser.uid
                         accountRepository.addAccount(account) { success ->
                             if (success) {
+                                // Account creation successful, now sign out the user
+                                secondaryFirebaseAuth.signOut()
                                 _loadingIndicator.postValue(false)
                                 onComplete(true)
-                            }else{
+                            } else {
                                 _loadingIndicator.postValue(false)
                                 onComplete(false)
                             }
@@ -186,8 +196,10 @@ class AccountViewModel : ViewModel() {
                     _loadingIndicator.postValue(false)
                     val exception = task.exception
                     if (exception != null) {
+                        // Handle the exception if needed
                     }
                 }
             }
     }
+
 }
